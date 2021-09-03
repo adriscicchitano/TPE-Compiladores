@@ -22,4 +22,14 @@ public class Buffer {
         this.buffer.clear();
     }
 
+    public String toString(){
+        String result = "";
+        for(Character c : buffer)
+            result += c;
+        return result;
+    }
+
+    public void removeLastChar() {
+        buffer.remove(buffer.size() - 1);
+    }
 }
