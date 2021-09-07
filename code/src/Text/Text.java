@@ -5,11 +5,14 @@ import java.util.Scanner;
 
 public class Text {
     private char[] text;
+    private boolean[] visited;
     private int currentLine = 1;
-    private int actualCharIndex = 0;
+    private int currentCharIndex = 0;
+    private boolean isEmpty;
 
     public Text(File file){
         this.text = fileToString(file).toCharArray();
+        this.visited = new boolean[this.text.length];
     }
 
     private String fileToString(File file){
@@ -23,19 +26,25 @@ public class Text {
             System.err.println("El archivo no es valido");
             return null;
         }
+        this.isEmpty = text.length() == 0;
         return text;
     }
 
     public char getNextChar(){
-        char result = text[actualCharIndex];
-        if(result == '\n')
+        char result = text[currentCharIndex];
+        if(result == '\n' && !visited[currentCharIndex])
             currentLine++;
-        actualCharIndex++;
+        currentCharIndex++;
+        visited[currentCharIndex-1] = true;
         return result;
     }
 
     public void returnChar(){
-        actualCharIndex--;
+        currentCharIndex--;
+    }
+
+    public boolean isEmpty(){
+        return this.isEmpty;
     }
 
     public int getCurrentLine(){
