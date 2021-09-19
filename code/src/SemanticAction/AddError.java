@@ -1,6 +1,7 @@
 package SemanticAction;
 
 import StateTransitionMatrix.StructureUtilities;
+import Structures.Token;
 
 public class AddError implements SemanticAction{
     String error;
@@ -10,7 +11,7 @@ public class AddError implements SemanticAction{
     }
 
     @Override
-    public void execute(StructureUtilities su, char c) {
+    public void execute(StructureUtilities su, char c, Token token) {
         su.addError(this.error);
     }
 }

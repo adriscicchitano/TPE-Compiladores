@@ -89,7 +89,6 @@ public class main {
         SemanticAction as_4_7 = new CompoundActions(as_4,new AddError("No puede terminar el archivo sin cerrar la cadena de caracteres"));
         SemanticAction as_4_8 = new CompoundActions(as_4,new AddError("Luego de un salto de linea no puede venir otro caracter que no sea un + u otro salto de linea"));
         SemanticAction as_4_9 = new CompoundActions(as_4,new AddError("El caracter = debe ser acompañado de otro caracter = "));
-        SemanticAction as_4_10 = new CompoundActions(as_4,new AddError("El caracter : debe ser acompañado de otro caracter = "));
         SemanticAction as_5 = addToBuffer;
         SemanticAction as_6 = removeLastCharFromBuffer;
         SemanticAction as_7 = new CompoundActions(returnCharToText,searchInSymbolsTable);
@@ -110,19 +109,24 @@ public class main {
                 {as_2,as_2,as_2,as_2,as_2,null,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2},                                                          //8
                 {null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null},                                                          //9
                 {as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_3,as_3,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2},                                                          //10
-                {as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_3,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10,as_4_10}, //11
+                {as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_3,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2},                                                          //11
                 {as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_3,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4,as_4_4},                    //12
                 {as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_3,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5,as_4_5},                    //13
-                {as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_11,as_5,as_5,as_4_6,as_5,as_5,as_5,as_4_7},                                                      //14
+                {as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_11,as_5,as_5,as_4_6,as_5,as_5,as_5,as_4_7},                                                     //14
                 {as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_5,as_3,as_5,as_5,as_6,as_5,as_5,as_5,as_4_7},                                                        //15
-                {as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,null,as_4_8,null,null,as_4_8,as_4_8,as_4_8},                      //16
+                {as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,as_4_8,null,as_4_8,null,null,as_4_8,as_4_8,as_4_8},                        //16
                 {as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_3,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2,as_2},                                                          //17
                 {as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_3,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9,as_4_9},                    //18
                 {null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null}                                                           //F
         };
 
-        LexicAnalyzer la = new LexicAnalyzer(states,cs,semanticActions);
-        la.analyze(text);
+        LexicAnalyzer la = new LexicAnalyzer(states,cs,semanticActions,text);
+        while(true) {
+            String aux = la.requestToken();
+            if(aux != null)
+                System.out.println(aux);
+            else break;
+        }
 
         //CharSet cs = new CharSet('a','b','c');
         //System.out.println(cs.contains('a'));

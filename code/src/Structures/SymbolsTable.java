@@ -8,10 +8,10 @@ public class SymbolsTable {
     private HashMap<String,String> symbolsTable;
     private final String[] reservedWords = {"IF", "THEN", "ELSE", "ENDIF", "PRINT",
                                             "FUNC", "RETURN", "BEGIN", "END", "BREAK",
-                                            "UINT", "DOUBLE", "WHILE", "DO"};
+                                            "UINT", "DOUBLE", "WHILE", "DO", "PRE"};
 
     public SymbolsTable(){
-        this.symbolsTable = new HashMap<String,String>();
+        this.symbolsTable = new HashMap<>();
     }
 
     public void addSymbols(String key, String value){

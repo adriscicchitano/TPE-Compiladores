@@ -2,6 +2,7 @@ package StateTransitionMatrix;
 
 import Structures.Buffer;
 import Structures.SymbolsTable;
+import Structures.Token;
 import Text.Text;
 import Text.TokenizedText;
 
@@ -38,13 +39,14 @@ public class StructureUtilities {
         text.returnChar();
     }
 
-    public void addToken(String s) {
+    public void addToken(String s,Token result) {
         if(!s.equals("")) {
             addSymbolToTable(buffer.toString(), "STRING");
-            tokenizedText.addToken(s + " " + buffer.toString());
+            result.setToken(s);
+            result.setSymbolsTableReference(buffer.toString());
         }
         else{
-            tokenizedText.addToken(buffer.toString());
+            result.setToken(buffer.toString());
         }
     }
 
@@ -60,17 +62,18 @@ public class StructureUtilities {
         errors.addToken("Linea " + text.getCurrentLine() + ": " + error);
     }
 
-    public void searchInSymbolsTable() {
+    public void searchInSymbolsTable(Token result) {
         if (symbolsTable.isReservedWord(buffer.toString().toUpperCase()))
-            tokenizedText.addToken("RESERVED_WORD " + buffer.toString().toUpperCase());
+            result.setToken(buffer.toString().toUpperCase());
         else {
+            result.setToken("ID");
             if (buffer.bufferSize() > 22) {
                 warnings.addToken("Linea " + text.getCurrentLine() + ": Se trunca el nombre del ID, la longitud maxima es 22");
                 addSymbolToTable(buffer.toString().substring(0, 22), "ID");
-                tokenizedText.addToken("ID " + buffer.toString().substring(0, 22));
+                result.setSymbolsTableReference(buffer.toString().substring(0, 22));
             } else {
                 addSymbolToTable(buffer.toString(), "ID");
-                tokenizedText.addToken("ID " + buffer.toString());
+                result.setSymbolsTableReference(buffer.toString());
             }
         }
 
@@ -80,14 +83,15 @@ public class StructureUtilities {
         this.symbolsTable.addSymbols(key,value);
     }
 
-    public void CheckRangeAndAddToken(String type) {
+    public void CheckRangeAndAddToken(String type,Token token) {
         if (type.equals("UINT")) {
             Integer aux = Integer.parseInt(buffer.toString());
             if (aux > UINT_MAX) {
                 errors.addToken("Linea " + text.getCurrentLine() + ": Constante UINT fuera de rango");
             } else {
                 addSymbolToTable(aux.toString(), "UINT");
-                tokenizedText.addToken("UINT " + aux.toString());
+                token.setToken("CTE_UINT");
+                token.setSymbolsTableReference(aux.toString());
             }
         }
         if(type.equals("DOUBLE")){
@@ -96,7 +100,8 @@ public class StructureUtilities {
                 errors.addToken("Linea " + text.getCurrentLine() + ": Constante DOUBLE fuera de rango");
             }else{
                 addSymbolToTable(aux.toString(), "DOUBLE");
-                tokenizedText.addToken("DOUBLE " + aux.toString());
+                token.setToken("CTE_DOUBLE");
+                token.setSymbolsTableReference(aux.toString());
             }
         }
     }

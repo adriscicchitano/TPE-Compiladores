@@ -1,6 +1,7 @@
 package SemanticAction;
 
 import StateTransitionMatrix.StructureUtilities;
+import Structures.Token;
 
 public class CheckRange implements SemanticAction{
     String type;
@@ -10,7 +11,7 @@ public class CheckRange implements SemanticAction{
     }
 
     @Override
-    public void execute(StructureUtilities su, char c) {
-        su.CheckRangeAndAddToken(this.type);
+    public void execute(StructureUtilities su, char c, Token token) {
+        su.CheckRangeAndAddToken(this.type,token);
     }
 }

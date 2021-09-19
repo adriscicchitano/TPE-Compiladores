@@ -1,6 +1,7 @@
 package SemanticAction;
 
 import StateTransitionMatrix.StructureUtilities;
+import Structures.Token;
 
 public class CompoundActions implements SemanticAction{
     SemanticAction sa1;
@@ -12,8 +13,8 @@ public class CompoundActions implements SemanticAction{
     }
 
     @Override
-    public void execute(StructureUtilities su, char c) {
-        sa1.execute(su,c);
-        sa2.execute(su,c);
+    public void execute(StructureUtilities su, char c, Token token) {
+        sa1.execute(su,c,token);
+        sa2.execute(su,c,token);
     }
 }
