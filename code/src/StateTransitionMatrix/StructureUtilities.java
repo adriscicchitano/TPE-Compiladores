@@ -47,11 +47,13 @@ public class StructureUtilities {
         }
         else{
             result.setToken(buffer.toString());
+            result.setSymbolsTableReference(null);
         }
     }
 
-    public void addToken(Character c) {
-        tokenizedText.addToken(c.toString());
+    public void addToken(Character c,Token result) {
+        result.setToken(c.toString());
+        result.setSymbolsTableReference(null);
     }
 
     public void removeLastCharFromBuffer() {
@@ -63,8 +65,10 @@ public class StructureUtilities {
     }
 
     public void searchInSymbolsTable(Token result) {
-        if (symbolsTable.isReservedWord(buffer.toString().toUpperCase()))
+        if (symbolsTable.isReservedWord(buffer.toString().toUpperCase())) {
             result.setToken(buffer.toString().toUpperCase());
+            result.setSymbolsTableReference(null);
+        }
         else {
             result.setToken("ID");
             if (buffer.bufferSize() > 22) {
@@ -121,5 +125,6 @@ public class StructureUtilities {
     public String showSymbolsTable() {
         return symbolsTable.toString();
     }
+
 }
 

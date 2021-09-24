@@ -50,4 +50,8 @@ public class Text {
     public int getCurrentLine(){
         return currentLine;
     }
+
+    public boolean isEndOfFile(){
+        return this.text.length == currentCharIndex;
+    }
 }
