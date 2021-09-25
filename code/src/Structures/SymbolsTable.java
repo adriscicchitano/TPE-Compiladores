@@ -1,5 +1,7 @@
 package Structures;
 
+import Utils.utils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -29,6 +31,12 @@ public class SymbolsTable {
                 return true;
         }
         return false;
+    }
+
+    public void setToNegative(String key){
+        String previousValue = this.symbolsTable.get(key);
+        this.symbolsTable.remove(key);
+        this.symbolsTable.put("-"+key,previousValue);
     }
 
     public String toString(){

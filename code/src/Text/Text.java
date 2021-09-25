@@ -20,7 +20,7 @@ public class Text {
         try {
             Scanner reader = new Scanner(file);
             while(reader.hasNextLine()) {
-                text += reader.nextLine() + '\n';
+                text += reader.nextLine() + "\n";
             }
         }catch(Exception e){
             System.err.println("El archivo no es valido");
@@ -32,7 +32,7 @@ public class Text {
 
     public char getNextChar(){
         char result = text[currentCharIndex];
-        if(result == '\n' && !visited[currentCharIndex])
+        if(currentCharIndex != 0 && text[currentCharIndex-1] == '\n' && !visited[currentCharIndex])
             currentLine++;
         currentCharIndex++;
         visited[currentCharIndex-1] = true;

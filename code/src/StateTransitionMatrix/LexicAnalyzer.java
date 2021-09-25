@@ -3,7 +3,7 @@ package StateTransitionMatrix;
 import SemanticAction.SemanticAction;
 import Structures.*;
 import Text.Text;
-import SemanticAction.SemanticAction;
+import SemanticAction.AddWarning;
 import SemanticAction.AddCharacterToBuffer;
 import SemanticAction.AddError;
 import SemanticAction.AddToSymbolsTable;
@@ -49,28 +49,29 @@ public class LexicAnalyzer {
         SemanticAction as_9 = new CompoundActions(returnCharToText, new CheckRange("DOUBLE"));
         SemanticAction as_10 = init;
         SemanticAction as_11 = new AddTokenFromBuffer("STRING");
+        SemanticAction as_12 = new AddWarning();
 
         SemanticAction[][] result = {
-                {as_0, as_0, as_0, as_0, as_1, as_0, as_0, as_0, as_0, as_0, as_0, as_0, as_10, as_1, as_1, null, null, as_0, null, null},                                                          //0
-                {as_5, as_5, as_5, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_5, as_7, as_7},                                                          //1
-                {as_8, as_5, as_8, as_5, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8},                                                          //2
-                {as_4_1, as_5, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1},                    //3
-                {as_9, as_5, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_5, as_9, as_9},                                                          //4
-                {as_4_2, as_5, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_5, as_5, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2},                        //5
-                {as_4_3, as_5, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3},                    //6
-                {as_9, as_5, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9},                                                          //7
-                {as_2, as_2, as_2, as_2, as_2, null, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2},                                                          //8
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},                                                          //9
-                {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2},                                                          //10
-                {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2},                                                          //11
-                {as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_3, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4},                    //12
-                {as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_3, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5},                    //13
-                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, as_4_6, as_5, as_5, as_5, as_4_7},                                                     //14
-                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_3, as_5, as_5, as_6, as_5, as_5, as_5, as_4_7},                                                        //15
-                {as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, null, as_4_8, null, null, as_4_8, as_4_8, as_4_8},                        //16
-                {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2},                                                          //17
-                {as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_3, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9},                    //18
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}                                                           //F
+                {as_0, as_0, as_0, as_0, as_1, as_0, as_0, as_0, as_0, as_0, as_0, as_0, as_10, as_1, as_1, null, null, as_0, null, as_12},                                                          //0
+                {as_5, as_5, as_5, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_7, as_5, as_7, new CompoundActions(as_12,as_7)},                                                          //1
+                {as_8, as_5, as_8, as_5, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, as_8, new CompoundActions(as_12,as_8)},                                                          //2
+                {as_4_1, as_5, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, as_4_1, new CompoundActions(as_12,as_4_1)},                    //3
+                {as_9, as_5, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_5, as_9, new CompoundActions(as_12,as_9)},                                                          //4
+                {as_4_2, as_5, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_4_2, as_5, as_5, as_4_2, as_4_2, as_4_2, as_4_2, new CompoundActions(as_12,as_4_2)},                        //5
+                {as_4_3, as_5, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, new CompoundActions(as_12,as_4_3)},                    //6
+                {as_9, as_5, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, new CompoundActions(as_12,as_9)},                                                          //7
+                {as_2, as_2, as_2, as_2, as_2, null, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //8
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as_12},                                                          //9
+                {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //10
+                {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //11
+                {as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_3, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, new CompoundActions(as_12,as_4_4)},                    //12
+                {as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_3, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, new CompoundActions(as_12,as_4_5)},                    //13
+                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, as_4_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                     //14
+                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_3, as_5, as_5, as_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                        //15
+                {as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, null, as_4_8, null, null, as_4_8, as_4_8, new CompoundActions(as_12,as_4_8)},                        //16
+                {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //17
+                {as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_3, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, new CompoundActions(as_12,as_4_9)},                    //18
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as_12}                                                           //F
         };
 
         return result;
@@ -99,35 +100,35 @@ public class LexicAnalyzer {
             new CharSet('$')
     };
     private int[][] states = {
-            {1,2,1,3,19,8,10,17,18,11,12,13,14,19,19,0,0,1,19,19},          //0
-            {1,1,1,19,19,19,19,19,19,19,19,19,19,19,19,19,19,1,19,19},     //1
-            {19,2,19,4,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},    //2
-            {19,4,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},   //3
-            {19,4,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,5,19,19},    //4
-            {19,7,19,19,19,19,19,19,19,19,19,19,19,6,6,19,19,19,19,19},     //5
-            {19,7,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},   //6
-            {19,7,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},   //7
-            {19,19,19,19,19,9,19,19,19,19,19,19,19,19,19,19,19,19,19,19},   //8
-            {9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,0,9,9,9,19},                     //9
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},  //10
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},  //11
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},  //12
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},  //13
-            {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,19,14,14,14,19},  //14
-            {14,14,14,14,14,14,14,14,14,14,14,14,14,15,14,16,14,14,14,19},  //15
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,14,19,16,16,19,19,19},  //16
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},  //17
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19},  //18
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,19}                      //F
+            {1,2,1,3,19,8,10,17,18,11,12,13,14,19,19,0,0,1,19,0},          //0
+            {1,1,1,19,19,19,19,19,19,19,19,19,19,19,19,19,19,1,19,0},     //1
+            {19,2,19,4,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},    //2
+            {19,4,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},   //3
+            {19,4,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,5,19,0},    //4
+            {19,7,19,19,19,19,19,19,19,19,19,19,19,6,6,19,19,19,19,0},     //5
+            {19,7,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},   //6
+            {19,7,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},   //7
+            {19,19,19,19,19,9,19,19,19,19,19,19,19,19,19,19,19,19,19,0},   //8
+            {9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,0,9,9,19,9},                     //9
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //10
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //11
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //12
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //13
+            {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,19,14,14,19,0},  //14
+            {14,14,14,14,14,14,14,14,14,14,14,14,14,15,14,16,14,14,19,0},  //15
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,14,19,16,16,19,19,0},  //16
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //17
+            {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //18
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,19,0}                      //F
     };
     private SemanticAction[][] semanticActions;
     private StructureUtilities su;
     private Text code;
     private Token currentToken = new Token();
 
-    public LexicAnalyzer(Text code){
+    public LexicAnalyzer(Text code, StructureUtilities su){
         this.code = code;
-        this.su = new StructureUtilities(code);
+        this.su = su;
         this.semanticActions = semanticActionsInitializer();
     }
 
@@ -136,36 +137,10 @@ public class LexicAnalyzer {
             if(charSet[i].contains(c))
                 return i;
         }
-        return charSet.length - 1;
+        if(c == '$')
+            return charSet.length - 1;
+        else return charSet.length;
     }
-
-    /*
-    private void analyze(){
-        int currentState = START_STATE;
-        char character = 0;
-
-        while(character != '$' && !code.isEmpty()){
-            if(currentState != FINAL_STATE) {
-                character = code.getNextChar();
-                int columnIndex = searchColumnIndex(character);
-                if (semanticActions[currentState][columnIndex] != null)
-                    semanticActions[currentState][columnIndex].execute(su, character);
-                currentState = states[currentState][columnIndex];
-            }else currentState = START_STATE;
-        }
-
-
-        System.out.println(su.showTokens());
-        System.out.println("---------------------------------------");
-        System.out.println(su.showErrors());
-        System.out.println("---------------------------------------");
-        System.out.println(su.showWarnings());
-        System.out.println("---------------------------------------");
-        System.out.println(su.showSymbolsTable());
-
-
-    }
-    */
 
     public String requestToken(){
         int currentState = START_STATE;
@@ -186,7 +161,7 @@ public class LexicAnalyzer {
         if(character == '$')
             return null;
         else {
-            return token.getToken() + token.getSymbolsTableReference();
+            return token.getToken();
         }
 
     }
@@ -221,7 +196,10 @@ public class LexicAnalyzer {
     }
 
     public int getCurrentLine(){
-        return this.code.getCurrentLine();
+        int line = this.code.getCurrentLine();
+        if(this.currentToken.isDetectedInNewLine())
+            return line - 1;
+        return line;
     }
 
     public String getSymbolsTableReference(){

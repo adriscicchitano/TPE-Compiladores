@@ -5,6 +5,7 @@ import Structures.SymbolsTable;
 import Structures.Token;
 import Text.Text;
 import Text.TokenizedText;
+import Utils.utils;
 
 public class StructureUtilities {
     private final int UINT_MAX = 65535;
@@ -42,17 +43,17 @@ public class StructureUtilities {
     public void addToken(String s,Token result) {
         if(!s.equals("")) {
             addSymbolToTable(buffer.toString(), "STRING");
-            result.setToken(s);
+            result.setToken(s,this.text.getCurrentLine());
             result.setSymbolsTableReference(buffer.toString());
         }
         else{
-            result.setToken(buffer.toString());
+            result.setToken(buffer.toString(),this.text.getCurrentLine());
             result.setSymbolsTableReference(null);
         }
     }
 
     public void addToken(Character c,Token result) {
-        result.setToken(c.toString());
+        result.setToken(c.toString(),this.text.getCurrentLine());
         result.setSymbolsTableReference(null);
     }
 
@@ -62,17 +63,23 @@ public class StructureUtilities {
 
     public void addError(String error) {
         errors.addToken("Linea " + text.getCurrentLine() + ": " + error);
+        System.err.println("Linea " + text.getCurrentLine() + ": " + error);
     }
+
+    public void addWarning(String warning){
+        warnings.addToken("Linea " + text.getCurrentLine() + ": " + warning);
+    }
+
 
     public void searchInSymbolsTable(Token result) {
         if (symbolsTable.isReservedWord(buffer.toString().toUpperCase())) {
-            result.setToken(buffer.toString().toUpperCase());
+            result.setToken(buffer.toString().toUpperCase(),this.text.getCurrentLine());
             result.setSymbolsTableReference(null);
         }
         else {
-            result.setToken("ID");
+            result.setToken("ID",this.text.getCurrentLine());
             if (buffer.bufferSize() > 22) {
-                warnings.addToken("Linea " + text.getCurrentLine() + ": Se trunca el nombre del ID, la longitud maxima es 22");
+                addWarning("Se trunca el nombre del ID, la longitud maxima es 22");
                 addSymbolToTable(buffer.toString().substring(0, 22), "ID");
                 result.setSymbolsTableReference(buffer.toString().substring(0, 22));
             } else {
@@ -89,25 +96,34 @@ public class StructureUtilities {
 
     public void CheckRangeAndAddToken(String type,Token token) {
         if (type.equals("UINT")) {
-            Integer aux = Integer.parseInt(buffer.toString());
-            if (aux > UINT_MAX) {
-                errors.addToken("Linea " + text.getCurrentLine() + ": Constante UINT fuera de rango");
+            if (!utils.checkUINTRange(buffer.toString())) {
+                addError("Constante UINT fuera de rango");
             } else {
-                addSymbolToTable(aux.toString(), "UINT");
-                token.setToken("CTE_UINT");
-                token.setSymbolsTableReference(aux.toString());
+                addSymbolToTable(buffer.toString(), "UINT");
+                token.setToken("CTE_UINT", this.text.getCurrentLine());
+                token.setSymbolsTableReference(buffer.toString());
             }
         }
-        if(type.equals("DOUBLE")){
-            Double aux = Double.parseDouble(buffer.toString());
-            if(aux < DOUBLE_MIN || aux > DOUBLE_MAX){
-                errors.addToken("Linea " + text.getCurrentLine() + ": Constante DOUBLE fuera de rango");
-            }else{
-                addSymbolToTable(aux.toString(), "DOUBLE");
-                token.setToken("CTE_DOUBLE");
-                token.setSymbolsTableReference(aux.toString());
+        if (type.equals("DOUBLE")) {
+            if (!utils.checkDOUBLERange(buffer.toString())) {
+                addError("Constante DOUBLE fuera de rango");
+            } else {
+                addSymbolToTable(buffer.toString(), "DOUBLE");
+                token.setToken("CTE_DOUBLE", this.text.getCurrentLine());
+                token.setSymbolsTableReference(buffer.toString());
             }
         }
+    }
+
+    public void setToNegative(String constant){
+
+        if(utils.checkDOUBLERange("-"+constant)){
+            this.symbolsTable.setToNegative(constant);
+        }
+        else{
+            this.addError("La constante UINT se va de rango al cambiarse a negativo");
+        }
+
     }
 
     public String showTokens() {
