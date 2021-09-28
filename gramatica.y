@@ -28,6 +28,7 @@ lista_de_variables				:	lista_de_variables ',' ID |
 funcion							:	tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN sentencias_ejecutables RETURN '('retorno')'';' END |
 									tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END 
 								;
+
 pre_condicion					:	PRE':' condicion ',' STRING ';'|
 									PRE':' condicion ',' STRING {su.addError(" falta ; luego de PRE");}|
 									PRE condicion ',' STRING ';' {su.addError(" falta : luego de PRE");}|
@@ -48,13 +49,11 @@ sentencias_ejecutables			: 	sentencias_ejecutables sentencia_ejecutable |
 									sentencia_ejecutable
 								;
 
-sentencia_ejecutable			:	asignacion';' {System.err.println("ASIGNACION");}|
-									llamado_funcion';' {System.err.println("LLAMADO FUNCION");} |
+sentencia_ejecutable			:	asignacion';' {System.err.println("ASIGNACION");} |
 									clausula_seleccion';' {System.err.println("CLAUSULA SELECCION");}|
 									sentencia_print';' {System.err.println("PRINT");}|
 									while';' {System.err.println("WHILE");} |
-									asignacion {su.addError(" falta ; luego de la sentencia");}|
-									llamado_funcion {su.addError(" falta ; luego de la sentencia");} |
+									asignacion {su.addError(" falta ; luego de la sentencia");} |
 									clausula_seleccion {su.addError(" falta ; luego de la sentencia");}|
 									sentencia_print {su.addError(" falta ; luego de la sentencia");}|
 									while {su.addError(" falta ; luego de la sentencia");}
@@ -76,9 +75,8 @@ sentencia_ejecutable_while		: 	sentencia_ejecutable |
 								;
 
 llamado_funcion					:	ID '('parametro')' |
-									ID '('error')' {su.addError(" no se reconoce el parametro en la llamada a la funcion");} |
-									ID parametro')' {su.addError(" falta parentesis de apertura en la llamada a la funcion");} |
-									ID '('parametro {su.addError(" falta parentesis de cierre en la llamada a la funcion");}
+									ID parametro')' {su.addError("falta parentesis de apertura para el llamado a la funcion " + $1.sval);} |
+									ID '('error {su.addError("la llamada a la funcion " + $1.sval + " no es correcta sintacticamente");}
 								;
 
 clausula_seleccion				:	IF condicion THEN bloque_sentencias_ejecutables ELSE bloque_sentencias_ejecutables ENDIF |
@@ -128,7 +126,8 @@ termino							:	termino '*' factor |
 								;
 factor							:	ID {$$.sval = $1.sval;}| 
 									uint_factor |
-									double_factor {$$.sval = $1.sval;}
+									double_factor {$$.sval = $1.sval;} |
+									llamado_funcion
 								;
 uint_factor						:	CTE_UINT {$$.sval = $1.sval;} |
 									'-' CTE_UINT {su.addError("UINT no puede ser negativo");}
@@ -176,5 +175,5 @@ tipo							: 	UINT |
   }
 
   private void yyerror(String err){
-    su.addError(err);
+    //su.addError(err);
   }

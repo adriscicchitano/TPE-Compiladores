@@ -61,7 +61,7 @@ public class LexicAnalyzer {
                 {as_4_3, as_5, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, as_4_3, new CompoundActions(as_12,as_4_3)},                    //6
                 {as_9, as_5, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, as_9, new CompoundActions(as_12,as_9)},                                                          //7
                 {as_2, as_2, as_2, as_2, as_2, null, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //8
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as_12},                                                          //9
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},                                                          //9
                 {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //10
                 {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //11
                 {as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_3, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, new CompoundActions(as_12,as_4_4)},                    //12
@@ -115,7 +115,7 @@ public class LexicAnalyzer {
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //12
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //13
             {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,19,14,14,19,14},  //14
-            {14,14,14,14,14,14,14,14,14,14,14,14,14,15,14,16,14,14,19,14},  //15
+            {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,16,14,14,19,14},  //15
             {19,19,19,19,19,19,19,19,19,19,19,19,19,14,19,16,16,19,19,0},  //16
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //17
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //18
