@@ -67,7 +67,7 @@ public class LexicAnalyzer {
                 {as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_3, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, new CompoundActions(as_12,as_4_4)},                    //12
                 {as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_3, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, new CompoundActions(as_12,as_4_5)},                    //13
                 {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, as_4_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                     //14
-                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_3, as_5, as_5, as_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                        //15
+                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, as_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                        //15
                 {as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, null, as_4_8, null, null, as_4_8, as_4_8, new CompoundActions(as_12,as_4_8)},                        //16
                 {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //17
                 {as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_3, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, new CompoundActions(as_12,as_4_9)},                    //18
@@ -114,8 +114,8 @@ public class LexicAnalyzer {
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //11
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //12
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //13
-            {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,19,14,14,19,0},  //14
-            {14,14,14,14,14,14,14,14,14,14,14,14,14,15,14,16,14,14,19,0},  //15
+            {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,19,14,14,19,14},  //14
+            {14,14,14,14,14,14,14,14,14,14,14,14,14,15,14,16,14,14,19,14},  //15
             {19,19,19,19,19,19,19,19,19,19,19,19,19,14,19,16,16,19,19,0},  //16
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //17
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //18
@@ -193,13 +193,6 @@ public class LexicAnalyzer {
             return token.charAt(0);
         else
             return TerminalsCodes.getCode(token);
-    }
-
-    public int getCurrentLine(){
-        int line = this.code.getCurrentLine();
-        if(this.currentToken.isDetectedInNewLine())
-            return line - 1;
-        return line;
     }
 
     public String getSymbolsTableReference(){

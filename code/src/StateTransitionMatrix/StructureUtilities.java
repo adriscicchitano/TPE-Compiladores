@@ -7,14 +7,14 @@ import Text.Text;
 import Text.TokenizedText;
 import Utils.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StructureUtilities {
-    private final int UINT_MAX = 65535;
-    private final double DOUBLE_MIN = 2.2250738585072014E-308;
-    private final double DOUBLE_MAX = 1.7976931348623157E+308;
 
     private Buffer buffer;
     private SymbolsTable symbolsTable;
-    private TokenizedText tokenizedText;
+    private List<Token> tokenizedText;
     private TokenizedText errors;
     private TokenizedText warnings;
     private Text text;
@@ -22,7 +22,7 @@ public class StructureUtilities {
     public StructureUtilities(Text text) {
         this.buffer = new Buffer();
         this.symbolsTable = new SymbolsTable();
-        this.tokenizedText = new TokenizedText();
+        this.tokenizedText = new ArrayList<Token>();
         this.errors = new TokenizedText();
         this.warnings = new TokenizedText();
         this.text = text;
@@ -50,11 +50,13 @@ public class StructureUtilities {
             result.setToken(buffer.toString(),this.text.getCurrentLine());
             result.setSymbolsTableReference(null);
         }
+        this.tokenizedText.add(result.copy());
     }
 
     public void addToken(Character c,Token result) {
         result.setToken(c.toString(),this.text.getCurrentLine());
         result.setSymbolsTableReference(null);
+        this.tokenizedText.add(result.copy());
     }
 
     public void removeLastCharFromBuffer() {
@@ -62,12 +64,12 @@ public class StructureUtilities {
     }
 
     public void addError(String error) {
-        errors.addToken("Linea " + text.getCurrentLine() + ": " + error);
-        System.err.println("Linea " + text.getCurrentLine() + ": " + error);
+        errors.addToken("Linea " + getCurrentLine() + ": " + error);
+        System.err.println("Linea " + getCurrentLine() + ": " + error);
     }
 
     public void addWarning(String warning){
-        warnings.addToken("Linea " + text.getCurrentLine() + ": " + warning);
+        warnings.addToken("Linea " + getCurrentLine() + ": " + warning);
     }
 
 
@@ -87,7 +89,7 @@ public class StructureUtilities {
                 result.setSymbolsTableReference(buffer.toString());
             }
         }
-
+        this.tokenizedText.add(result.copy());
     }
 
     private void addSymbolToTable(String key, String value){
@@ -113,6 +115,7 @@ public class StructureUtilities {
                 token.setSymbolsTableReference(buffer.toString());
             }
         }
+        this.tokenizedText.add(token.copy());
     }
 
     public void setToNegative(String constant){
@@ -126,8 +129,21 @@ public class StructureUtilities {
 
     }
 
+    private int getCurrentLine(){
+        int line = this.text.getCurrentLine();
+        if(this.tokenizedText.size() != 0) {
+            if (this.tokenizedText.get(this.tokenizedText.size()-1).isDetectedInNewLine())
+                return line - 1;
+        }
+        return line;
+    }
+
     public String showTokens() {
-        return tokenizedText.toString();
+        String result = "";
+        for(Token t :  this.tokenizedText){
+            result += t.getToken() + '\n';
+        }
+        return result;
     }
 
     public String showErrors() {

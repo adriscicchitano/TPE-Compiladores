@@ -26,16 +26,16 @@ lista_de_variables				:	lista_de_variables ',' ID |
 								;
 
 funcion							:	tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN sentencias_ejecutables RETURN '('retorno')'';' END |
-									tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN pre_condicion ';' sentencias_ejecutables RETURN '('retorno')'';' END |
-									tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END {su.addError(" falta ; luego de la sentencia PRE dentro de la funcion " + $3.sval);}
+									tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END 
 								;
-pre_condicion					:	PRE':' condicion ',' STRING |
-									PRE condicion ',' STRING {su.addError(" falta : luego de PRE");}|
-									PRE':' condicion STRING {su.addError(" falta , luego de la condicion en PRE");} |
-									PRE':' ',' STRING {su.addError(" falta falta la condicion para la sentencia PRE");} |
-									PRE':' condicion ',' {su.addError(" falta la cadena de caracteres luego de la ,");} |
-									PRE':' condicion {su.addError(" falta , y la cadena de caracteres luego de la condicion");} |
-									PRE error {su.addError(" la sentencia PRE no es correcta sintacticamente");}
+pre_condicion					:	PRE':' condicion ',' STRING ';'|
+									PRE':' condicion ',' STRING {su.addError(" falta ; luego de PRE");}|
+									PRE condicion ',' STRING ';' {su.addError(" falta : luego de PRE");}|
+									PRE':' condicion STRING ';'{su.addError(" falta , luego de la condicion en PRE");} |
+									PRE':' ',' STRING ';'{su.addError(" falta falta la condicion para la sentencia PRE");} |
+									PRE':' condicion ',' ';'{su.addError(" falta la cadena de caracteres luego de la ,");} |
+									PRE':' condicion ';'{su.addError(" falta , y la cadena de caracteres luego de la condicion");} |
+									PRE error ';'{su.addError(" la sentencia PRE no es correcta sintacticamente");}
 								;
 retorno							:	expresion
 								;
@@ -150,7 +150,14 @@ tipo							: 	UINT |
     yydebug=debug;
   }
 
+  public Parser(Text text){
+    this.text = text;
+	this.su = new StructureUtilities(text);
+    this.lexicAnalyzer = new LexicAnalyzer(text,su);
+  }
+
   private void showResults(){
+	System.out.println("Tokens: \n" + su.showTokens());
     System.out.println("Errores: \n" + su.showErrors());
     System.out.println("Warnings: \n" + su.showWarnings());
     System.out.println("Simbolos: \n" + su.showSymbolsTable());

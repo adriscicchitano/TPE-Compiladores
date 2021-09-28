@@ -4,10 +4,17 @@ public class Token {
     //HACER UN METODO QUE DEVUELVA EL TOKEN COMO UN ENTERO (VALOR ASCII O VALOR OTORGADO POR EL PARSER)
     private String token;
     private String symbolsTableReference;
-    private int detectedInLine = 0;
+    private int detectedInLine = 1;
     private boolean isNewLine;
 
     public Token(){}
+
+    public Token(String token, int line,String symbolsTableReference, boolean isNewLine){
+        this.token =token;
+        this.detectedInLine = line;
+        this.symbolsTableReference = symbolsTableReference;
+        this.isNewLine = isNewLine;
+    }
 
     public void setSymbolsTableReference(String reference){
         this.symbolsTableReference = reference;
@@ -41,5 +48,9 @@ public class Token {
 
     public boolean isDetectedInNewLine() {
         return isNewLine;
+    }
+
+    public Token copy(){
+        return new Token(this.getToken(),this.getLineDetected(),this.getSymbolsTableReference(),this.isDetectedInNewLine());
     }
 }

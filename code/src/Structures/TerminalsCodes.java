@@ -3,7 +3,7 @@ package Structures;
 import java.util.HashMap;
 
 public class TerminalsCodes {
-    private static HashMap<String,Integer> codes = new HashMap<>(){{
+    private static HashMap<String,Integer> codes = new HashMap<String,Integer>(){{
         put(":=",257);
         put("ID",258);
         put("CTE_UINT",259);
