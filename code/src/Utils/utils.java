@@ -1,5 +1,12 @@
 package Utils;
 
+import StateTransitionMatrix.StructureUtilities;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
 public class utils {
     private static final int UINT_MAX = 65535;
     private static final double POSITIVE_DOUBLE_MIN = 2.2250738585072014E-308;
@@ -16,7 +23,7 @@ public class utils {
         }
     }
 
-    public static boolean checkDOUBLERange(String buffer){
+    public static boolean checkDOUBLERange(String buffer) {
         Double aux = Double.parseDouble(buffer);
         if (aux > 0) {
             if (aux < POSITIVE_DOUBLE_MIN || aux > POSITIVE_DOUBLE_MAX) {
@@ -24,12 +31,38 @@ public class utils {
             } else {
                 return true;
             }
-        }else{
+        } else {
             if (aux < NEGATIVE_DOUBLE_MIN || aux > NEGATIVE_DOUBLE_MAX) {
                 return false;
             } else {
                 return true;
             }
         }
+    }
+
+    public static String formattedList(List<String> list){
+        String result = "";
+        for(String t :  list){
+            result += t + '\n';
+        }
+        return result;
+    }
+
+    public static void exportResults(StructureUtilities su) throws IOException {
+        BufferedWriter writer;
+        writer = new BufferedWriter(new FileWriter("errors.txt"));
+        writer.write(su.showErrors());
+        writer.close();
+        writer = new BufferedWriter(new FileWriter("warnings.txt"));
+        writer.write(su.showWarnings());
+        writer.close();
+        writer = new BufferedWriter(new FileWriter("tokens.txt"));
+        writer.write(su.showTokens());
+        writer.close();
+        writer = new BufferedWriter(new FileWriter("symbols_table.txt"));
+        writer.write(su.showSymbolsTable());
+        writer = new BufferedWriter(new FileWriter("code_structures.txt"));
+        writer.write(su.showCodeStructures());
+        writer.close();
     }
 }

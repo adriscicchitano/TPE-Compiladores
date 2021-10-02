@@ -4,7 +4,6 @@ import Structures.Buffer;
 import Structures.SymbolsTable;
 import Structures.Token;
 import Text.Text;
-import Text.TokenizedText;
 import Utils.utils;
 
 import java.util.ArrayList;
@@ -15,16 +14,18 @@ public class StructureUtilities {
     private Buffer buffer;
     private SymbolsTable symbolsTable;
     private List<Token> tokenizedText;
-    private TokenizedText errors;
-    private TokenizedText warnings;
+    private List<String> codeStructures;
+    private List<String> errors;
+    private List<String> warnings;
     private Text text;
 
     public StructureUtilities(Text text) {
         this.buffer = new Buffer();
         this.symbolsTable = new SymbolsTable();
-        this.tokenizedText = new ArrayList<Token>();
-        this.errors = new TokenizedText();
-        this.warnings = new TokenizedText();
+        this.tokenizedText = new ArrayList<>();
+        this.codeStructures = new ArrayList<>();
+        this.errors = new ArrayList<>();
+        this.warnings = new ArrayList<>();
         this.text = text;
     }
 
@@ -64,14 +65,16 @@ public class StructureUtilities {
     }
 
     public void addError(String error) {
-        errors.addToken("Linea " + getCurrentLine() + ": " + error);
-        System.err.println("Linea " + getCurrentLine() + ": " + error);
+        errors.add("Linea " + getCurrentLine() + ": " + error);
     }
 
     public void addWarning(String warning){
-        warnings.addToken("Linea " + getCurrentLine() + ": " + warning);
+        warnings.add("Linea " + getCurrentLine() + ": " + warning);
     }
 
+    public void addCodeStructure(String s){
+        this.codeStructures.add("Linea " + getCurrentLine() + ": " + s);
+    }
 
     public void searchInSymbolsTable(Token result) {
         if (symbolsTable.isReservedWord(buffer.toString().toUpperCase())) {
@@ -121,7 +124,7 @@ public class StructureUtilities {
     public void setToNegative(String constant){
 
         if(utils.checkDOUBLERange("-"+constant)){
-            this.symbolsTable.setToNegative(constant);
+            this.symbolsTable.addSymbols("-"+constant,"DOUBLE");
         }
         else{
             this.addError("La constante UINT se va de rango al cambiarse a negativo");
@@ -146,12 +149,16 @@ public class StructureUtilities {
         return result;
     }
 
+    public String showCodeStructures() {
+        return utils.formattedList(codeStructures);
+    }
+
     public String showErrors() {
-        return errors.toString();
+        return utils.formattedList(errors);
     }
 
     public String showWarnings(){
-        return warnings.toString();
+        return utils.formattedList(warnings);
     }
 
     public String showSymbolsTable() {

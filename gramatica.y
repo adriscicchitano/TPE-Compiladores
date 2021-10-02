@@ -2,6 +2,7 @@
 package StateTransitionMatrix;
 import Text.Text;
 import Utils.utils;
+import java.io.IOException;
 %}
 
 %token ASIG ID CTE_UINT CTE_DOUBLE UINT DOUBLE STRING PRINT MAYOR_IGUAL MENOR_IGUAL IGUAL DISTINTO OR AND IF THEN ELSE ENDIF BREAK BEGIN END WHILE DO FUNC RETURN PRE
@@ -13,9 +14,9 @@ bloque_sentencias_declarativas	:	sentencias_declarativas
 sentencias_declarativas			:	sentencias_declarativas sentencia_declarativa |
 									sentencia_declarativa
 								;
-sentencia_declarativa			:	tipo lista_de_variables ';' |
+sentencia_declarativa			:	tipo lista_de_variables ';' {su.addCodeStructure("Declaracion de variables " + $1.sval);}|
 									funcion';' |
-									FUNC lista_de_variables';' |
+									FUNC lista_de_variables';' {su.addCodeStructure("Declaracion de variables de tipo FUNC");} |
 									tipo lista_de_variables {su.addError(" falta ; luego de la sentencia");} |
 									funcion {su.addError(" falta ; luego de la sentencia");} |
 									FUNC lista_de_variables {su.addError(" falta ; luego de la sentencia");} |
@@ -25,8 +26,9 @@ lista_de_variables				:	lista_de_variables ',' ID |
 									ID
 								;
 
-funcion							:	tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN sentencias_ejecutables RETURN '('retorno')'';' END |
-									tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END 
+funcion							:	tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN sentencias_ejecutables RETURN '('retorno')'';' END {su.addCodeStructure("Declaracion de la funcion " + $3.sval);}|
+									tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END {su.addCodeStructure("Declaracion de la funcion " + $3.sval);} |
+									tipo FUNC ID error {su.addError("La funcion es " + $3.sval + " incorrecta sintacticamente");}
 								;
 
 pre_condicion					:	PRE':' condicion ',' STRING ';'|
@@ -49,10 +51,10 @@ sentencias_ejecutables			: 	sentencias_ejecutables sentencia_ejecutable |
 									sentencia_ejecutable
 								;
 
-sentencia_ejecutable			:	asignacion';' {System.err.println("ASIGNACION");} |
-									clausula_seleccion';' {System.err.println("CLAUSULA SELECCION");}|
-									sentencia_print';' {System.err.println("PRINT");}|
-									while';' {System.err.println("WHILE");} |
+sentencia_ejecutable			:	asignacion';' {su.addCodeStructure("ASIGNACION");} |
+									clausula_seleccion';' {su.addCodeStructure("SENTENCIA IF");}|
+									sentencia_print';' {su.addCodeStructure("SENTENCIA PRINT");}|
+									while';' {su.addCodeStructure("WHILE");} |
 									asignacion {su.addError(" falta ; luego de la sentencia");} |
 									clausula_seleccion {su.addError(" falta ; luego de la sentencia");}|
 									sentencia_print {su.addError(" falta ; luego de la sentencia");}|
@@ -74,7 +76,7 @@ sentencia_ejecutable_while		: 	sentencia_ejecutable |
 									BREAK {su.addError(" falta ; luego de la sentencia");}
 								;
 
-llamado_funcion					:	ID '('parametro')' |
+llamado_funcion					:	ID '('parametro')' {su.addCodeStructure("LLamado a funcion " + $1.sval);}|
 									ID parametro')' {su.addError("falta parentesis de apertura para el llamado a la funcion " + $1.sval);} |
 									ID '('error {su.addError("la llamada a la funcion " + $1.sval + " no es correcta sintacticamente");}
 								;
@@ -95,33 +97,33 @@ condicion						:	'('condicion_AND')' |
 									'('condicion_AND {su.addError(" falta parentesis de cierre en la condicion");}  |
 									condicion_AND')'{su.addError(" falta parentesis de apertura en la condicion");}
 								;
-condicion_AND					:	condicion_AND AND condicion_OR |
+condicion_AND					:	condicion_AND AND condicion_OR {su.addCodeStructure("Se detecta una condicion AND");}|
 									condicion_OR
 								;
-condicion_OR					:	condicion_OR OR condicion_simple |
+condicion_OR					:	condicion_OR OR condicion_simple {su.addCodeStructure("Se detecta una condicion OR");}|
 									condicion_simple
 								;
-condicion_simple				:	condicion_simple '>' expresion |
-									condicion_simple '<' expresion |
-									condicion_simple MAYOR_IGUAL expresion |
-									condicion_simple MENOR_IGUAL expresion |
-									condicion_simple IGUAL expresion |
-									condicion_simple DISTINTO expresion |
+condicion_simple				:	condicion_simple '>' expresion {su.addCodeStructure("Se detecta una condicion >");}|
+									condicion_simple '<' expresion {su.addCodeStructure("Se detecta una condicion <");}|
+									condicion_simple MAYOR_IGUAL expresion {su.addCodeStructure("Se detecta una condicion >=");}|
+									condicion_simple MENOR_IGUAL expresion {su.addCodeStructure("Se detecta una condicion <=");}|
+									condicion_simple IGUAL expresion {su.addCodeStructure("Se detecta una condicion ==");}|
+									condicion_simple DISTINTO expresion {su.addCodeStructure("Se detecta una condicion <>");}|
 									expresion
 								;
 sentencia_print					:	PRINT'('STRING')' |
 									PRINT STRING ')' {su.addError(" falta parentesis de apertura para la sentencia PRINT");} |
 									PRINT '(' STRING {su.addError(" falta parentesis de cierre para la sentencia PRINT");}
 								;
-asignacion						:	ID ASIG expresion {}
+asignacion						:	ID ASIG expresion
 								;
-expresion						:	expresion '+' termino |
-									expresion '-' termino |
+expresion						:	expresion '+' termino {su.addCodeStructure("Se detecta una suma");}|
+									expresion '-' termino {su.addCodeStructure("Se detecta una resta");}|
 									termino {$$.sval = $1.sval;}|
 									expresion error termino {su.addError(" no se reconoce el operador");}
 								;
-termino							:	termino '*' factor |
-									termino '/' factor |
+termino							:	termino '*' factor {su.addCodeStructure("Se detecta una multiplicacion");}|
+									termino '/' factor {su.addCodeStructure("Se detecta una division");}|
 									factor {$$.sval = $1.sval;}
 								;
 factor							:	ID {$$.sval = $1.sval;}| 
@@ -135,8 +137,8 @@ uint_factor						:	CTE_UINT {$$.sval = $1.sval;} |
 double_factor					:	CTE_DOUBLE {$$.sval = $1.sval;} |
 									'-' CTE_DOUBLE {$$.sval = $2.sval; setToNegative($2.sval);}
 								;
-tipo							: 	UINT |
-									DOUBLE
+tipo							: 	UINT {$$.sval = "UINT";}|
+									DOUBLE {$$.sval = "DOUBLE";}
 								;
 %%
   private Text text;
@@ -156,10 +158,15 @@ tipo							: 	UINT |
   }
 
   private void showResults(){
-	System.out.println("Tokens: \n" + su.showTokens());
-    System.out.println("Errores: \n" + su.showErrors());
-    System.out.println("Warnings: \n" + su.showWarnings());
-    System.out.println("Simbolos: \n" + su.showSymbolsTable());
+	try {
+      utils.exportResults(su);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    //System.out.println("Tokens: \n" + su.showTokens());
+    //System.out.println("Errores: \n" + su.showErrors());
+    //System.out.println("Warnings: \n" + su.showWarnings());
+    //System.out.println("Simbolos: \n" + su.showSymbolsTable());
   }
 
   private void setToNegative(String constant){
