@@ -61,8 +61,16 @@ public class utils {
         writer.close();
         writer = new BufferedWriter(new FileWriter("symbols_table.txt"));
         writer.write(su.showSymbolsTable());
+        writer.close();
         writer = new BufferedWriter(new FileWriter("code_structures.txt"));
         writer.write(su.showCodeStructures());
+        writer.close();
+    }
+
+    public static void exportErrors(StructureUtilities su) throws IOException {
+        BufferedWriter writer;
+        writer = new BufferedWriter(new FileWriter("errors.txt"));
+        writer.write(su.showErrors());
         writer.close();
     }
 }

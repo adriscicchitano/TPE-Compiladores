@@ -1,0 +1,19 @@
+double a,b,c,d,e,f;					** identificadores con la cantidad de caracteres permitidos (< 22)
+uint z,y;
+uint abcdefghijklmnopqrstuvwxyz;	** identificador que sobrepasa la cantidad de caracteres permitidos
+uint a_b_c_1;						** identificador con letras, numero y "_"
+string _xyz;						** identificador que comienza con "_"
+begin
+	a := -1.0;						** constante DOUBLE dentro del rango
+	b := 1.7976931348623157E+309;	** constante DOUBLE fuera del rango
+	c := .5;						** constante DOUBLE sin parte decimal y sin exponente
+	d := .3E+5;						** constante DOUBLE sin parte decimal, con exponente positivo
+	e := .7E-7;						** constante DOUBLE sin parte decimal, con exponente negativo
+	f := 1.0E8;						** constante DOUBLE con parte decimal y exponente sin signo (positivo)
+	z := 25;						** constante UINT dentro del rango
+	y := 100000;					** constante UINT fuera del rango			
+	print(%ABCD%);					** palabra clave PRINT en minuscula, con cadena de caracteres correcta
+	PRINT(%AB+
+	+CD);							** palabra clave PRINT en mayuscula, con cadena de caracteres mal escrita
+end
+$

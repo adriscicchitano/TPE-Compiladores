@@ -5,9 +5,9 @@ import Utils.utils;
 import java.io.IOException;
 %}
 
-%token ASIG ID CTE_UINT CTE_DOUBLE UINT DOUBLE STRING PRINT MAYOR_IGUAL MENOR_IGUAL IGUAL DISTINTO OR AND IF THEN ELSE ENDIF BREAK BEGIN END WHILE DO FUNC RETURN PRE
+%token ASIG ID CTE_UINT CTE_DOUBLE UINT DOUBLE STRING PRINT MAYOR_IGUAL MENOR_IGUAL IGUAL DISTINTO OR AND IF THEN ELSE ENDIF BREAK BEGIN END WHILE DO FUNC RETURN PRE WRONG_STRING CTE_STRING
 %%
-programa						:	bloque_sentencias_declarativas bloque_sentencias_ejecutables {showResults();}
+programa						:	bloque_sentencias_declarativas bloque_sentencias_ejecutables {showResults();} 
 								;
 bloque_sentencias_declarativas	:	sentencias_declarativas
 								;
@@ -31,24 +31,26 @@ funcion							:	tipo FUNC ID '('parametro')' bloque_sentencias_declarativas BEGI
 									tipo FUNC ID error {su.addError("La funcion es " + $3.sval + " incorrecta sintacticamente");}
 								;
 
-pre_condicion					:	PRE':' condicion ',' STRING ';'|
-									PRE':' condicion ',' STRING {su.addError(" falta ; luego de PRE");}|
-									PRE condicion ',' STRING ';' {su.addError(" falta : luego de PRE");}|
-									PRE':' condicion STRING ';'{su.addError(" falta , luego de la condicion en PRE");} |
-									PRE':' ',' STRING ';'{su.addError(" falta falta la condicion para la sentencia PRE");} |
+pre_condicion					:	PRE':' condicion ',' CTE_STRING ';'|
+									PRE':' condicion ',' CTE_STRING {su.addError(" falta ; luego de PRE");}|
+									PRE condicion ',' CTE_STRING ';' {su.addError(" falta : luego de PRE");}|
+									PRE':' condicion CTE_STRING ';'{su.addError(" falta , luego de la condicion en PRE");} |
+									PRE':' ',' CTE_STRING ';'{su.addError(" falta falta la condicion para la sentencia PRE");} |
 									PRE':' condicion ',' ';'{su.addError(" falta la cadena de caracteres luego de la ,");} |
 									PRE':' condicion ';'{su.addError(" falta , y la cadena de caracteres luego de la condicion");} |
-									PRE error ';'{su.addError(" la sentencia PRE no es correcta sintacticamente");}
+									PRE error ';'{su.addError(" la sentencia PRE no es correcta sintacticamente");} |
+									PRE':' condicion ',' WRONG_STRING {su.addError("El STRING es incorrecto");}
 								;
 retorno							:	expresion
 								;
 parametro						:	tipo ID
 								;
 bloque_sentencias_ejecutables	:	BEGIN sentencias_ejecutables END |
-									BEGIN END
+									BEGIN END 
+									
 								;
 sentencias_ejecutables			: 	sentencias_ejecutables sentencia_ejecutable |
-									sentencia_ejecutable
+									sentencia_ejecutable 
 								;
 
 sentencia_ejecutable			:	asignacion';' {su.addCodeStructure("ASIGNACION");} |
@@ -58,7 +60,7 @@ sentencia_ejecutable			:	asignacion';' {su.addCodeStructure("ASIGNACION");} |
 									asignacion {su.addError(" falta ; luego de la sentencia");} |
 									clausula_seleccion {su.addError(" falta ; luego de la sentencia");}|
 									sentencia_print {su.addError(" falta ; luego de la sentencia");}|
-									while {su.addError(" falta ; luego de la sentencia");}
+									while {su.addError(" falta ; luego de la sentencia");} 
 								;
 
 while							:	WHILE condicion DO bloque_sentencias_while |
@@ -109,13 +111,23 @@ condicion_simple				:	condicion_simple '>' expresion {su.addCodeStructure("Se de
 									condicion_simple MENOR_IGUAL expresion {su.addCodeStructure("Se detecta una condicion <=");}|
 									condicion_simple IGUAL expresion {su.addCodeStructure("Se detecta una condicion ==");}|
 									condicion_simple DISTINTO expresion {su.addCodeStructure("Se detecta una condicion <>");}|
-									expresion
+									expresion |
+									condicion_simple '=' expresion {su.addError("No se reconoce el comparador");} |
+									condicion_simple ':' expresion {su.addError("No se reconoce el comparador");}
+
 								;
-sentencia_print					:	PRINT'('STRING')' |
-									PRINT STRING ')' {su.addError(" falta parentesis de apertura para la sentencia PRINT");} |
-									PRINT '(' STRING {su.addError(" falta parentesis de cierre para la sentencia PRINT");}
+sentencia_print					:	PRINT to_print |
+									PRINT error {su.addError("la sentencia PRINT no es correcta sintacticamente");}
 								;
-asignacion						:	ID ASIG expresion
+to_print						:	'('CTE_STRING')' |
+									'('CTE_STRING {su.addError(" falta parentesis de cierre para la sentencia PRINT");} |
+									CTE_STRING')' {su.addError(" falta parentesis de apertura para la sentencia PRINT");} |
+									'('error')' {su.addError(" STRING mal escrito");} |
+									'('WRONG_STRING {su.addError("STRING mal escrito");}
+									
+								;
+asignacion						:	ID ASIG expresion | 
+									ID error {su.addError("La asignacion no es correcta sintacticamente");}
 								;
 expresion						:	expresion '+' termino {su.addCodeStructure("Se detecta una suma");}|
 									expresion '-' termino {su.addCodeStructure("Se detecta una resta");}|
@@ -138,7 +150,8 @@ double_factor					:	CTE_DOUBLE {$$.sval = $1.sval;} |
 									'-' CTE_DOUBLE {$$.sval = $2.sval; setToNegative($2.sval);}
 								;
 tipo							: 	UINT {$$.sval = "UINT";}|
-									DOUBLE {$$.sval = "DOUBLE";}
+									DOUBLE {$$.sval = "DOUBLE";} |
+									STRING {$$.sval = "STRING";} 
 								;
 %%
   private Text text;
@@ -155,6 +168,19 @@ tipo							: 	UINT {$$.sval = "UINT";}|
     this.text = text;
 	this.su = new StructureUtilities(text);
     this.lexicAnalyzer = new LexicAnalyzer(text,su);
+  }
+
+  public void compile(){
+	this.run();
+	if(!su.hasErrors()){
+		System.out.println("La compilacion fue correcta");
+	}else{
+		try {
+			utils.exportErrors(su);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
   }
 
   private void showResults(){

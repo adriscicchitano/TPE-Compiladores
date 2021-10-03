@@ -1,0 +1,1 @@
+{a=ID, b=ID, c=ID, 25=UINT, d=ID, .7E-7=DOUBLE, e=ID, f=ID, .5=DOUBLE, .3E+5=DOUBLE, 1.0E8=DOUBLE, abcdefghijklmnopqrstuv=ID, a_b_c_1=ID, 1.0=DOUBLE, -1.0=DOUBLE, _xyz=ID, y=ID, z=ID, ABCD=CTE_STRING}

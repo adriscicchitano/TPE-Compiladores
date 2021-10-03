@@ -1,0 +1,32 @@
+Linea 1: Declaracion de variables DOUBLE
+Linea 3: Declaracion de variables UINT
+Linea 5: Se detecta una condicion >
+Linea 6: Se detecta una resta
+Linea 6: ASIGNACION
+Linea 7: Se detecta una suma
+Linea 7: ASIGNACION
+Linea 8: Declaracion de la funcion f
+Linea 10: Declaracion de variables de tipo FUNC
+Linea 12: LLamado a funcion f
+Linea 12: Se detecta una multiplicacion
+Linea 12: ASIGNACION
+Linea 13: Se detecta una condicion AND
+Linea 15: ASIGNACION
+Linea 17: WHILE
+Linea 18: SENTENCIA PRINT
+Linea 19: Se detecta una condicion >
+Linea 19: ASIGNACION
+Linea 19: ASIGNACION
+Linea 19: SENTENCIA IF
+Linea 20: Se detecta una condicion <
+Linea 20: Se detecta una condicion >
+Linea 20: Se detecta una condicion AND
+Linea 22: ASIGNACION
+Linea 23: ASIGNACION
+Linea 25: SENTENCIA IF
+Linea 26: SENTENCIA PRINT
+Linea 28: SENTENCIA PRINT
+Linea 29: Se detecta una condicion >
+Linea 29: SENTENCIA IF
+Linea 30: Se detecta una condicion <
+Linea 31: ASIGNACION

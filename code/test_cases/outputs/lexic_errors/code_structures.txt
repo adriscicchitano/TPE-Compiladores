@@ -1,0 +1,14 @@
+Linea 1: Declaracion de variables DOUBLE
+Linea 2: Declaracion de variables UINT
+Linea 3: Declaracion de variables UINT
+Linea 4: Declaracion de variables UINT
+Linea 5: Declaracion de variables STRING
+Linea 7: ASIGNACION
+Linea 8: ASIGNACION
+Linea 9: ASIGNACION
+Linea 10: ASIGNACION
+Linea 11: ASIGNACION
+Linea 12: ASIGNACION
+Linea 13: ASIGNACION
+Linea 14: ASIGNACION
+Linea 15: SENTENCIA PRINT

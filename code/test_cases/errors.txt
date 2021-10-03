@@ -1,0 +1,10 @@
+Linea 29:  falta bloque de sentencias luego del THEN
+Linea 30: El caracter = debe ser acompañado de otro caracter = 
+Linea 30: La asignacion no es correcta sintacticamente
+Linea 30:  falta ; luego de la sentencia
+Linea 31: La asignacion no es correcta sintacticamente
+Linea 31:  falta ; luego de la sentencia
+Linea 31: La asignacion no es correcta sintacticamente
+Linea 32:  falta ; luego de la sentencia
+Linea 33:  STRING mal escrito
+Linea 33:  falta ; luego de la sentencia

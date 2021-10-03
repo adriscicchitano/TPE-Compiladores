@@ -1,0 +1,1 @@
+{aa=ID, 3.1E3=DOUBLE, a=ID, b=ID, f=ID, j=ID, +=STRING, 0=UINT, 1=UINT, r=ID, 3=UINT, 4=UINT, t=ID, x=ID, -3.1E3=DOUBLE, z=ID}

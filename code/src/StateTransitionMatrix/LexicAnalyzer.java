@@ -48,8 +48,9 @@ public class LexicAnalyzer {
         SemanticAction as_8 = new CompoundActions(returnCharToText, new CheckRange("UINT"));
         SemanticAction as_9 = new CompoundActions(returnCharToText, new CheckRange("DOUBLE"));
         SemanticAction as_10 = init;
-        SemanticAction as_11 = new AddTokenFromBuffer("STRING");
+        SemanticAction as_11 = new AddTokenFromBuffer("CTE_STRING");
         SemanticAction as_12 = new AddWarning();
+        SemanticAction as_13 = new AddTokenFromBuffer("WRONG_STRING");
 
         SemanticAction[][] result = {
                 {as_0, as_0, as_0, as_0, as_1, as_0, as_0, as_0, as_0, as_0, as_0, as_0, as_10, as_1, as_1, null, null, as_0, null, as_12},                                                          //0
@@ -66,12 +67,13 @@ public class LexicAnalyzer {
                 {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //11
                 {as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_3, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, as_4_4, new CompoundActions(as_12,as_4_4)},                    //12
                 {as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_3, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, as_4_5, new CompoundActions(as_12,as_4_5)},                    //13
-                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, as_4_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                     //14
+                {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, new CompoundActions(as_13,as_4_6), as_5, as_5, new CompoundActions(as_13,as_4_7), new CompoundActions(as_12,as_5)},                                                     //14
                 {as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_5, as_11, as_5, as_5, as_6, as_5, as_5, as_4_7, new CompoundActions(as_12,as_5)},                                                        //15
                 {as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, as_4_8, null, as_4_8, null, null, as_4_8, as_4_8, new CompoundActions(as_12,as_4_8)},                        //16
                 {as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_3, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, as_2, new CompoundActions(as_12,as_2)},                                                          //17
                 {as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_3, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, as_4_9, new CompoundActions(as_12,as_4_9)},                    //18
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as_12}                                                           //F
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as_12},
+                {null,null,null,null,null,null,null,null,null,null,null,null,as_11,null,null,null,null,null,as_11,null}//F
         };
 
         return result;
@@ -116,10 +118,12 @@ public class LexicAnalyzer {
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //13
             {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,19,14,14,19,14},  //14
             {14,14,14,14,14,14,14,14,14,14,14,14,19,15,14,16,14,14,19,14},  //15
-            {19,19,19,19,19,19,19,19,19,19,19,19,19,14,19,16,16,19,19,0},  //16
+            {20,20,20,20,20,20,20,20,20,20,20,20,20,14,20,16,16,20,20,0},  //16
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //17
             {19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,0},  //18
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,19,0}                      //F
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,19,0},                      //F
+            {20,20,20,20,20,20,20,20,20,20,20,20,19,20,20,20,20,20,19,20}   //20
+
     };
     private SemanticAction[][] semanticActions;
     private StructureUtilities su;
@@ -142,30 +146,6 @@ public class LexicAnalyzer {
         else return charSet.length;
     }
 
-    public String requestToken(){
-        int currentState = START_STATE;
-        char character = 0;
-        Token token = new Token();
-
-        if(!code.isEmpty()) {
-            while (currentState != FINAL_STATE) {
-                character = code.getNextChar();
-                int columnIndex = searchColumnIndex(character);
-                if (semanticActions[currentState][columnIndex] != null)
-                    semanticActions[currentState][columnIndex].execute(su, character,token);
-                currentState = states[currentState][columnIndex];
-            }
-        }else{
-            return null;
-        }
-        if(character == '$')
-            return null;
-        else {
-            return token.getToken();
-        }
-
-    }
-
     public int yylex(){
         int currentState = START_STATE;
         char character = 0;
@@ -183,8 +163,9 @@ public class LexicAnalyzer {
         }
         if(character == '$')
             return 0;
-        else
+        else {
             return convertToCode(currentToken.getToken());
+        }
 
     }
 

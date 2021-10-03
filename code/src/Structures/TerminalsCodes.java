@@ -30,6 +30,8 @@ public class TerminalsCodes {
         put("FUNC",280);
         put("RETURN",281);
         put("PRE",282);
+        put("WRONG_STRING",283);
+        put("CTE_STRING",284);
     }};
 
     public static int getCode(String code){

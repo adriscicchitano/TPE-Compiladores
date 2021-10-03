@@ -43,7 +43,8 @@ public class StructureUtilities {
 
     public void addToken(String s,Token result) {
         if(!s.equals("")) {
-            addSymbolToTable(buffer.toString(), "STRING");
+            if(s.equals("CTE_STRING"))
+                addSymbolToTable(buffer.toString(), "CTE_STRING");
             result.setToken(s,this.text.getCurrentLine());
             result.setSymbolsTableReference(buffer.toString());
         }
@@ -165,5 +166,8 @@ public class StructureUtilities {
         return symbolsTable.toString();
     }
 
+    public boolean hasErrors(){
+        return this.errors.size() > 0;
+    }
 }
 

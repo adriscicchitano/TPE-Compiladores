@@ -1,0 +1,7 @@
+Linea 8: Constante DOUBLE fuera de rango
+Linea 8: La asignacion no es correcta sintacticamente
+Linea 14: Constante UINT fuera de rango
+Linea 14: La asignacion no es correcta sintacticamente
+Linea 16: No puede haber un salto de linea en la cadena de caracteres sin un + anteriormente
+Linea 16: STRING mal escrito
+Linea 17:  falta ; luego de la sentencia
