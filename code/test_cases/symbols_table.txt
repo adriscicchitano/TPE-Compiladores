@@ -1,1 +1,0 @@
-{aa=ID, 3.1E3=DOUBLE, a=ID, 23=UINT, b=ID, 13=UINT, f=ID, h=ID, j=ID, +=CTE_STRING, 0=UINT, 1=UINT, r=ID, 3=UINT, 4=UINT, t=ID, 5=UINT, x=ID, -3.1E3=DOUBLE, z=ID, fasfdasfafa=CTE_STRING, 54=UINT}

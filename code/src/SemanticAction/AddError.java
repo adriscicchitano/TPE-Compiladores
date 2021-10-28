@@ -12,6 +12,6 @@ public class AddError implements SemanticAction{
 
     @Override
     public void execute(StructureUtilities su, char c, Token token) {
-        su.addError(this.error);
+        su.addError(this.error,"Lexico");
     }
 }

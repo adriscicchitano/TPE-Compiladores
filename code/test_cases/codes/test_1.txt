@@ -1,3 +1,5 @@
+abc
+
 double aa;
 uint func f(uint z)
 uint a,b;
@@ -9,19 +11,19 @@ begin
 end;
 func r,t;
 begin
-	x:= f (uint j) * -3.1E3;
+	x:= f (j) * -3.1E3;
 	while (x && 0) DO
 	begin
 		x:=3;
 		break;
 	end;
 	print(%aa%);
-	if (x>0)  then begin a:=0; end else begin a:=0; end endif;
+	if (x>0)  then begin a:=0; end; else begin a:=0; end; endif;
 	if (a<0 && b>54) then
 	begin
 		a:=13;
 		b:=23;
-	end
+	end;
 	endif;
 	print(%fasfdasfafa%);
 	print(%fasfd+
@@ -29,8 +31,6 @@ begin
 	if (h>3) then endif;
 	while (a<5) do begin
 	a = a+1;
-	end
-	print()
-end
-
-$
+	end;
+	print();
+end;

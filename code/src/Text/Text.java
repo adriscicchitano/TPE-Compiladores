@@ -27,6 +27,7 @@ public class Text {
             return null;
         }
         this.isEmpty = text.length() == 0;
+        text += "\n" + '$';
         return text;
     }
 

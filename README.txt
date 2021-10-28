@@ -1,4 +1,4 @@
-El archivo ejecutable .jar se encuentra en la carpeta test_cases.
+El archivo ejecutable .jar se encuentra en la carpeta code/test_cases.
 Para ejecutarlo, se debe abrir una consola, navegar hasta test_cases y ejecutar
 
 java -jar g21_compiler.jar [PATH al codigo a compilar]

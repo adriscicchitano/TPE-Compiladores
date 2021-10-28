@@ -1,6 +1,7 @@
 package StateTransitionMatrix;
 
 import Structures.Buffer;
+import Structures.SymbolTableValue;
 import Structures.SymbolsTable;
 import Structures.Token;
 import Text.Text;
@@ -65,8 +66,8 @@ public class StructureUtilities {
         buffer.removeLastChar();
     }
 
-    public void addError(String error) {
-        errors.add("Linea " + getCurrentLine() + ": " + error);
+    public void addError(String error, String stage) {
+        errors.add(stage + " - Linea " + getCurrentLine() + ": " + error);
     }
 
     public void addWarning(String warning){
@@ -103,7 +104,7 @@ public class StructureUtilities {
     public void CheckRangeAndAddToken(String type,Token token) {
         if (type.equals("UINT")) {
             if (!utils.checkUINTRange(buffer.toString())) {
-                addError("Constante UINT fuera de rango");
+                addError("Constante UINT fuera de rango", "Lexico");
             } else {
                 addSymbolToTable(buffer.toString(), "UINT");
                 token.setToken("CTE_UINT", this.text.getCurrentLine());
@@ -112,7 +113,7 @@ public class StructureUtilities {
         }
         if (type.equals("DOUBLE")) {
             if (!utils.checkDOUBLERange(buffer.toString())) {
-                addError("Constante DOUBLE fuera de rango");
+                addError("Constante DOUBLE fuera de rango", "Lexico");
             } else {
                 addSymbolToTable(buffer.toString(), "DOUBLE");
                 token.setToken("CTE_DOUBLE", this.text.getCurrentLine());
@@ -128,7 +129,7 @@ public class StructureUtilities {
             this.symbolsTable.addSymbols("-"+constant,"DOUBLE");
         }
         else{
-            this.addError("La constante UINT se va de rango al cambiarse a negativo");
+            this.addError("La constante UINT se va de rango al cambiarse a negativo", "Sintactico");
         }
 
     }
@@ -168,6 +169,34 @@ public class StructureUtilities {
 
     public boolean hasErrors(){
         return this.errors.size() > 0;
+    }
+
+    public void changeSTValues(String key, String type, String use){
+        this.symbolsTable.changeValue(key, type, use);
+    }
+
+    public void changeSTValues(List<String> keys, String type, String use){
+        for(String key : keys)
+            this.symbolsTable.changeValue(key, type, use);
+    }
+
+    public void changeSTKey(String formerKey, String newKey){
+        SymbolTableValue v = this.symbolsTable.remove(formerKey);
+        this.symbolsTable.addSymbols(newKey,v);
+    }
+
+    public void changeSTKeys(List<String> formerKeys, List<String> newKeys){
+        System.out.println(formerKeys);
+        System.out.println(newKeys);
+        if(formerKeys.size() != newKeys.size()) {
+            System.err.println("changeSTKeys - No hay la misma cantidad de claves");
+            return;
+        }
+        int i = 0;
+        while (i < formerKeys.size()) {
+            changeSTKey(formerKeys.get(i), newKeys.get(i));
+            i++;
+        }
     }
 }
 
