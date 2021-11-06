@@ -28,7 +28,7 @@ public String sval;
  * object value of this 'union'
  */
 public Object obj;
-
+public String type;
 //#############################################
 //## C O N S T R U C T O R S
 //#############################################
@@ -69,7 +69,13 @@ public ParserVal(Object val)
 {
   obj=val;
 }
+
+  public void setType(String type){
+    this.type = type;
+  }
 }//end class
+
+
 
 //#############################################
 //## E N D    O F    F I L E

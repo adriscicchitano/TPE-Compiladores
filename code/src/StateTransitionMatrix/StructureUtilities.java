@@ -8,6 +8,7 @@ import Text.Text;
 import Utils.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StructureUtilities {
@@ -79,8 +80,8 @@ public class StructureUtilities {
     }
 
     public void searchInSymbolsTable(Token result) {
-        if (symbolsTable.isReservedWord(buffer.toString().toUpperCase())) {
-            result.setToken(buffer.toString().toUpperCase(),this.text.getCurrentLine());
+        if (symbolsTable.isReservedWord(buffer.toString())) {
+            result.setToken(buffer.toString(),this.text.getCurrentLine());
             result.setSymbolsTableReference(null);
         }
         else {
@@ -106,7 +107,7 @@ public class StructureUtilities {
             if (!utils.checkUINTRange(buffer.toString())) {
                 addError("Constante UINT fuera de rango", "Lexico");
             } else {
-                addSymbolToTable(buffer.toString(), "UINT");
+                addSymbolToTable(buffer.toString(), "CTE_UINT");
                 token.setToken("CTE_UINT", this.text.getCurrentLine());
                 token.setSymbolsTableReference(buffer.toString());
             }
@@ -115,7 +116,7 @@ public class StructureUtilities {
             if (!utils.checkDOUBLERange(buffer.toString())) {
                 addError("Constante DOUBLE fuera de rango", "Lexico");
             } else {
-                addSymbolToTable(buffer.toString(), "DOUBLE");
+                addSymbolToTable(buffer.toString(), "CTE_DOUBLE");
                 token.setToken("CTE_DOUBLE", this.text.getCurrentLine());
                 token.setSymbolsTableReference(buffer.toString());
             }
@@ -175,19 +176,29 @@ public class StructureUtilities {
         this.symbolsTable.changeValue(key, type, use);
     }
 
+    public void changeSTValues(String key, String type, String use, String parameterType){
+        this.symbolsTable.changeValue(key, type, use, parameterType);
+    }
+
     public void changeSTValues(List<String> keys, String type, String use){
         for(String key : keys)
             this.symbolsTable.changeValue(key, type, use);
     }
 
+    public void changeSTValues(List<String> keys, String type, String use, String parameterType){
+        for(String key : keys)
+            this.symbolsTable.changeValue(key, type, use, parameterType);
+    }
+
     public void changeSTKey(String formerKey, String newKey){
         SymbolTableValue v = this.symbolsTable.remove(formerKey);
-        this.symbolsTable.addSymbols(newKey,v);
+        if(!this.symbolsTable.contains(newKey))
+            this.symbolsTable.addSymbols(newKey,v);
+        else
+            this.addError("Redeclaracion de variable " + formerKey,"Semantica");
     }
 
     public void changeSTKeys(List<String> formerKeys, List<String> newKeys){
-        System.out.println(formerKeys);
-        System.out.println(newKeys);
         if(formerKeys.size() != newKeys.size()) {
             System.err.println("changeSTKeys - No hay la misma cantidad de claves");
             return;
@@ -197,6 +208,30 @@ public class StructureUtilities {
             changeSTKey(formerKeys.get(i), newKeys.get(i));
             i++;
         }
+    }
+
+    public SymbolTableValue getSymbolsTableValue(String key){
+        //String[] aux = key.split(":");
+        //System.out.println(Arrays.toString(aux));
+        SymbolTableValue value = this.symbolsTable.getValue(key);
+        if(value != null)
+            return value;
+        else {
+            System.err.println("La clave " + key + " no existe en la tabla de simbolos");
+            return null;
+        }
+    }
+
+    public String searchForKey(String key, String scope){
+        //Retorna la clave que existe en la tabla de simbolos dependiendo el ambito
+        String[] scopes = scope.split(":");
+        for(int i = scopes.length; i > 0; i--){
+            String newKey = key+":"+String.join(":",Arrays.copyOfRange(scopes,0,i));
+            SymbolTableValue result = getSymbolsTableValue(newKey);
+            if(result != null)
+                return newKey;
+        }
+        return null;
     }
 }
 

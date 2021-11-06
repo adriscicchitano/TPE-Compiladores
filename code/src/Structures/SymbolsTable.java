@@ -39,6 +39,20 @@ public class SymbolsTable {
 
     }
 
+    public void changeValue(String key, String type, String use, String parameterType){
+        SymbolTableValue v = null;
+        if(this.symbolsTable.containsKey(key)) {
+            v = this.symbolsTable.remove(key);
+            v.setType(type);
+            v.setUse(use);
+            v.setParameterType(parameterType);
+            this.symbolsTable.put(key,v);
+        }else{
+            System.err.println("NO EXISTE LA CLAVE EN LA TABLA DE SIMBOLOS");
+        }
+
+    }
+
     public SymbolTableValue remove(String key){
         return this.symbolsTable.remove(key);
     }
@@ -55,6 +69,12 @@ public class SymbolsTable {
         return false;
     }
 
+    public SymbolTableValue getValue(String key){
+        if(this.contains(key))
+            return this.symbolsTable.get(key);
+        else
+            return null;
+    }
 
     public String toString(){
         return this.symbolsTable.toString();

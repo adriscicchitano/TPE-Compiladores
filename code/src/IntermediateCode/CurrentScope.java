@@ -1,4 +1,4 @@
-package Structures;
+package IntermediateCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class CurrentScope {
         String scope = "";
         int i = 0;
         while(i < currentScope.size() - 1) {
-            scope += currentScope.get(i) + ".";
+            scope += currentScope.get(i) + ":";
             i++;
         }
         scope += currentScope.get(i);

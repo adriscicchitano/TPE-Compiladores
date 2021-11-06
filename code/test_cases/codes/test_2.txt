@@ -1,0 +1,20 @@
+abc
+DOUBLE ab;
+UINT aa;
+UINT FUNC f(UINT z)
+	DOUBLE FUNC hace(UINT z)
+		DOUBLE a;
+		BEGIN
+			aa:=a - 4;
+			RETURN(0);
+		END;
+	DOUBLE a;
+	BEGIN
+		aa:=a - 4;
+		RETURN(0);
+	END;
+FUNC r,t;
+BEGIN
+	IF (aa > t) THEN ab := f(aa); ENDIF;
+	WHILE (aa + aa < 4 || 1 > 0) DO BREAK;
+END;
