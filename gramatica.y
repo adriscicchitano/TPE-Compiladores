@@ -62,6 +62,7 @@ retorno							:	expresion
 								;
 parametro						:	tipo ID {su.changeSTValues($2.sval,$1.sval,"PARAM");$$.sval = $2.sval;}
 								;
+
 bloque_sentencias_ejecutables	:	BEGIN sentencias_ejecutables END';' |
 									BEGIN END ';'	
 								;
@@ -80,7 +81,19 @@ sentencia_ejecutable			:	asignacion';' {su.addCodeStructure("ASIGNACION");} |
 									sentencia_erronea
 								;
 
-while							:	WHILE condicion DO bloque_sentencias_while |
+while							:	WHILE condicion DO bloque_sentencias_while 
+													{
+														t = this.tercetosjump.get(this.tercetos.size() - 1);
+														t.set_v2(String.valueOf((Integer)tercetos.size()));
+														t2 = new Terceto(
+				      											"BI",
+				      											"["+this.tercetos.size()+"]",
+				      											String.valueOf((Integer)(this.tercetos.indexOf(t) - 1)),
+				      											null
+			      												);
+			      											this.tercetos.add(t2)															
+														
+													}|
 									WHILE DO bloque_sentencias_while {su.addError(" falta la condicion de corte del WHILE", "Sintáctica");}|
 									WHILE condicion bloque_sentencias_while {su.addError(" falta DO en la sentencia WHILE", "Sintáctica");}
 								;
@@ -98,8 +111,26 @@ sentencia_ejecutable_while		: 	sentencia_ejecutable |
 llamado_funcion					:	ID '('factor')' {su.addCodeStructure("LLamado a funcion " + $1.sval);}
 								;
 
-clausula_seleccion				:	IF condicion THEN bloque_sentencias_ejecutables ELSE bloque_sentencias_ejecutables ENDIF |
-									IF condicion THEN bloque_sentencias_ejecutables ENDIF |
+clausula_seleccion				:	IF condicion THEN bloque_sentencias_ejecutables ELSE	{
+															t = this.tercetosjump.get(this.tercetos.size() - 1);
+															t.set_v2(String.valueOf((Integer)tercetos.size()));
+															t2 = new Terceto(
+					      											"BI",
+					      											"["+this.tercetos.size()+"]",
+					      											"",
+					      											null
+				      												);															
+				      										        this.tercetos.add(t2);
+				      										        this.tercetosjump.add(t2);															
+														} bloque_sentencias_ejecutables ENDIF
+														{
+															t = this.tercetosjump.get(this.tercetos.size() - 1);															t = this.tercetosjump.get(this.tercetos.size() - 1);
+															t.set_v2(String.valueOf((Integer)tercetos.size()));
+														} |
+									IF condicion THEN bloque_sentencias_ejecutables ENDIF{
+																	t = this.tercetosjump.get(this.tercetos.size() - 1);
+																	t.set_v2(String.valueOf((Integer)tercetos.size()));	
+																} |
 									IF condicion bloque_sentencias_ejecutables ELSE bloque_sentencias_ejecutables ENDIF {su.addError(" falta THEN en la sentencia IF", "Sintáctica");} |
 									IF condicion THEN bloque_sentencias_ejecutables ELSE bloque_sentencias_ejecutables {su.addError(" falta ENDIF en la sentencia IF", "Sintáctica");} |
 									IF condicion bloque_sentencias_ejecutables ENDIF {su.addError(" falta THEN en la sentencia IF", "Sintáctica");} |
@@ -110,7 +141,18 @@ clausula_seleccion				:	IF condicion THEN bloque_sentencias_ejecutables ELSE blo
 									IF condicion THEN ENDIF {su.addError(" falta bloque de sentencias luego del THEN", "Sintáctica");}|
 									IF condicion THEN bloque_sentencias_ejecutables ELSE ENDIF  {su.addError(" falta bloque de sentencias luego del ELSE", "Sintáctica");}
 								;
-condicion						:	'('condicion_AND')' |
+condicion						:	'('condicion_AND')' 
+									{
+										        t = new Terceto(
+              											"BF",
+              											"["+this.tercetos.size()+"]",
+              											"",
+              											null
+      												);
+      										        this.tercetos.add(t);
+      										        this.tercetosjump.add(t);
+      										        
+									}|
 									'('condicion_AND {su.addError(" falta parentesis de cierre en la condicion", "Sintáctica");}  |
 									condicion_AND')'{su.addError(" falta parentesis de apertura en la condicion", "Sintáctica");}
 								;
@@ -356,6 +398,7 @@ tipo							: 	UINT {$$.sval = "UINT";}|
   private StructureUtilities su;
   private List<String> idList;
   private List<Terceto> tercetos = new ArrayList<>();
+  private List<Terceto> tercetosjump = new ArrayList<>();
   boolean leftIsTerceto = false;
   boolean rightIsTerceto = false;
   boolean sumDetected = false;
@@ -365,7 +408,6 @@ tipo							: 	UINT {$$.sval = "UINT";}|
   String leftTercetoIndexForComparison;
   String leftTercetoIndexForOR;
   String leftTercetoIndexForAND;
-
   
   public Parser(Text text, boolean debug){
     this.text = text;
