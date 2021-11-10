@@ -42,6 +42,7 @@ lista_de_variables				:	lista_de_variables ',' ID {idList.add($3.sval);}|
 header_funcion					:	
 									tipo FUNC ID '('parametro')' 
 									{
+										$$.sval = $3.sval;
 										su.addCodeStructure("Declaracion de la funcion " + $3.sval);
 										su.changeSTValues($3.sval,$1.sval,"FUNC");
 										su.changeSTKey($3.sval,$3.sval + ":" + CurrentScope.getScope());
@@ -49,18 +50,53 @@ header_funcion					:
 										su.changeSTKey($5.sval,$5.sval + ":" + CurrentScope.getScope());
 									}
 								;
-cuerpo_funcion					:
+cuerpo_funcion					:	
 									BEGIN sentencias_ejecutables RETURN '('retorno')'';' END';' |
 									BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END';' |
 									BEGIN sentencias_ejecutables RETURN '('retorno')'';' END {su.addError(" falta ; luego del END", "Sintáctica");} |
 									BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END {su.addError(" falta ; luego del END", "Sintáctica");}
 								;
-funcion							:	header_funcion bloque_sentencias_declarativas cuerpo_funcion {CurrentScope.deleteScope();}
+funcion							:	header_funcion bloque_sentencias_declarativas 
+									{
+										this.tercetos.add(new Terceto(
+											"tag",
+											su.searchForKey($1.sval, CurrentScope.getScope()),
+											"-",
+											null
+										));
+									} cuerpo_funcion 
+									{	
+										CurrentScope.deleteScope();
+									} |
+									
+									header_funcion
+									{
+										this.tercetos.add(new Terceto(
+											"tag",
+											su.searchForKey($1.sval, CurrentScope.getScope()),
+											"-",
+											null
+										));
+									} cuerpo_funcion 
+									{	
+										CurrentScope.deleteScope();
+									}
+									
 								;
 pre_condicion					:	PRE':' condicion ',' CTE_STRING ';'|
 									PRE error ';' {su.addError(" Se encontro un error no considerado por la gramatica luego del PRE", "Sintáctica");}
 								;
-retorno							:	expresion
+retorno							:	expresion 
+									{
+										this.tercetos.addAll(this.getTercetos(
+											"ret",
+											leftTercetoIndex != null && (!leftTercetoIndex.equals("0")) ? leftTercetoIndex : $1.sval,
+											leftTercetoIndex != null && (!leftTercetoIndex.equals("0")) ? leftTercetoIndex : $1.sval,
+											leftTercetoIndex != null && (!leftTercetoIndex.equals("0")), 
+											leftTercetoIndex != null && (!leftTercetoIndex.equals("0")),
+											false
+										));
+									}
 								;
 parametro						:	tipo ID {su.changeSTValues($2.sval,$1.sval,"PARAM");$$.sval = $2.sval;}
 								;
@@ -108,9 +144,12 @@ llamado_funcion					:
 									ID '('factor')' 
 									{
 										su.addCodeStructure("LLamado a funcion " + $1.sval);
-										SymbolTableValue v1 = su.getSymbolsTableValue(su.searchForKey($1.sval,CurrentScope.getScope()));
-										SymbolTableValue v2 = su.getSymbolsTableValue(su.searchForKey($3.sval,CurrentScope.getScope()));
-										System.err.println(v1 + " - " + v2);
+										this.tercetos.add(new Terceto(
+											"call",
+											su.searchForKey($1.sval,CurrentScope.getScope()),
+											su.searchForKey($3.sval,CurrentScope.getScope()),
+											su.getSymbolsTableValue(su.searchForKey($3.sval,CurrentScope.getScope())).getType().toLowerCase()
+										));
 									}
 								;
 
@@ -241,7 +280,8 @@ condicion_simple				:	condicion_simple '>' expresion
 									expresion 
 									{
 										comparisonDetected = true;
-										leftTercetoIndexForComparison = leftIsTerceto ? String.valueOf((Integer)tercetos.size()) : null; 
+										leftTercetoIndexForComparison = leftTercetoIndex;
+										//leftTercetoIndexForComparison = leftIsTerceto ? String.valueOf((Integer)tercetos.size()) : null; 
 										leftIsTerceto = false;
 									}|
 									condicion_simple '=' expresion {su.addError("No se reconoce el comparador", "Sintáctica");} |
@@ -425,11 +465,7 @@ tipo							: 	UINT {$$.sval = "UINT";}|
 
   private void setToNegative(String constant){
     this.su.setToNegative(constant);
-  }
-  
-  private boolean isValidFunctionCall(String funcName, String parameter){
-	
-  }	  
+  } 
   
   private List<Terceto> getTercetos(String operator, String leftValue, String rightValue, boolean leftIsTerceto, boolean rightIsTerceto, boolean compositeComparison){
     List<Terceto> aux = new ArrayList<>();
@@ -518,7 +554,7 @@ tipo							: 	UINT {$$.sval = "UINT";}|
 
     String type = v.getType();
     String use = v.getUse();
-    if(!use.equals("VARIABLE"))
+    if(!use.equals("VARIABLE") && !use.equals("PARAM"))
         su.addError("No es posible realizaz asignaciones a una variable", "Semantica");
     else{
         if(!itsSingleNumber){
