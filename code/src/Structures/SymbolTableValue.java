@@ -4,6 +4,7 @@ public class SymbolTableValue {
     private String type;
     private String use;
     private String parameterType;
+    private String callableFunction;
 
     public SymbolTableValue(String type, String use){
         this.type = type;
@@ -36,8 +37,19 @@ public class SymbolTableValue {
         this.parameterType = parameter;
     }
 
+    public void setCallable(String callableFunction){
+        this.callableFunction = callableFunction;
+    }
+
+    public String getCallable(){
+        return this.callableFunction;
+    }
+
     @Override
     public String toString() {
-        return "["+type + "-" + use + "]";
+        String result = "["+type + "-" + use;
+        if(this.callableFunction != null)
+            result += "-" + callableFunction;
+        return  result+ "]";
     }
 }

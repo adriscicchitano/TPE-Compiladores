@@ -12,7 +12,11 @@ import IntermediateCode.Terceto;
 
 %token ASIG ID CTE_UINT CTE_DOUBLE UINT DOUBLE STRING PRINT MAYOR_IGUAL MENOR_IGUAL IGUAL DISTINTO OR AND IF THEN ELSE ENDIF BREAK BEGIN END WHILE DO FUNC RETURN PRE WRONG_STRING CTE_STRING
 %%
-programa						:	nombre_programa bloque_sentencias_declarativas BEGIN sentencias_ejecutables END';'
+programa						:	nombre_programa bloque_sentencias_declarativas
+									{
+										this.tercetos.add(new Terceto("main", "-", "-", null));
+									}
+									BEGIN sentencias_ejecutables END';'
 									{	
 										showResults();
 										int i = 1;
@@ -29,7 +33,20 @@ bloque_sentencias_declarativas	:	sentencias_declarativas
 sentencias_declarativas			:	sentencias_declarativas sentencia_declarativa |
 									sentencia_declarativa
 								;
-sentencia_declarativa			:	tipo lista_de_variables ';' {su.addCodeStructure("Declaracion de variables " + $1.sval);su.changeSTValues(idList,$1.sval,"VARIABLE");su.changeSTKeys(idList,concatenateScope(idList,CurrentScope.getScope()));}|
+sentencia_declarativa			:	tipo lista_de_variables ';' 
+									{
+										su.addCodeStructure("Declaracion de variables " + $1.sval);
+										su.changeSTValues(idList,$1.sval,"VARIABLE");
+										su.changeSTKeys(idList,concatenateScope(idList,CurrentScope.getScope()));
+										for(String var : idList){
+											this.tercetos.add(new Terceto(
+												"var",
+												su.searchForKey(var, CurrentScope.getScope()), 
+												$1.sval,
+												$1.sval
+											));
+										}
+									}|
 									funcion |
 									FUNC lista_de_variables';' {su.addCodeStructure("Declaracion de variables de tipo FUNC");su.changeSTValues(idList,"FUNC","VARIABLE");su.changeSTKeys(idList,concatenateScope(idList,CurrentScope.getScope()));} |
 									tipo lista_de_variables {su.addError(" falta ; luego de la sentencia", "Sintáctica");} |
@@ -48,6 +65,13 @@ header_funcion					:
 										su.changeSTKey($3.sval,$3.sval + ":" + CurrentScope.getScope());
 										CurrentScope.addScope($3.sval);
 										su.changeSTKey($5.sval,$5.sval + ":" + CurrentScope.getScope());
+										
+										this.tercetos.add(new Terceto(
+											"tag",
+											su.searchForKey($3.sval, CurrentScope.getScope()),
+											su.searchForKey($5.sval, CurrentScope.getScope()),
+											null
+										));
 									}
 								;
 cuerpo_funcion					:	
@@ -56,15 +80,7 @@ cuerpo_funcion					:
 									BEGIN sentencias_ejecutables RETURN '('retorno')'';' END {su.addError(" falta ; luego del END", "Sintáctica");} |
 									BEGIN pre_condicion sentencias_ejecutables RETURN '('retorno')'';' END {su.addError(" falta ; luego del END", "Sintáctica");}
 								;
-funcion							:	header_funcion bloque_sentencias_declarativas 
-									{
-										this.tercetos.add(new Terceto(
-											"tag",
-											su.searchForKey($1.sval, CurrentScope.getScope()),
-											"-",
-											null
-										));
-									} cuerpo_funcion 
+funcion							:	header_funcion bloque_sentencias_declarativas cuerpo_funcion 
 									{	
 										CurrentScope.deleteScope();
 									} |
@@ -110,10 +126,30 @@ sentencia_ejecutable			:	asignacion {su.addCodeStructure("ASIGNACION");} |
 									while {su.addCodeStructure("WHILE");}
 								;
 clausula_seleccion				:
-									IF condicion bloque_then bloque_else ENDIF ';' |
-									IF condicion bloque_then ENDIF ';' |
+									IF condicion bloque_then
+															{
+																this.t = this.tercetosjump.get(this.tercetosjump.size() - 1);
+																this.t2 = new Terceto(
+																		"BI",
+																		"",
+																		"",
+																		null
+																		);															
+																this.tercetos.add(this.t2);
+																this.tercetosjump.add(this.t2);		
+																this.t.setV2(String.valueOf((Integer)(tercetos.size()+1)));
+															}
+									bloque_else ENDIF ';' 
+															{
+																this.t = this.tercetosjump.get(this.tercetosjump.size() - 1);															
+																this.t.setV2(String.valueOf((Integer)(tercetos.size()+1)));
+															}|
+									IF condicion bloque_then ENDIF ';' 
+															{
+																this.t = this.tercetosjump.get(this.tercetosjump.size() - 1);
+																this.t.setV2(String.valueOf((Integer)(tercetos.size()+1)));	
+															}|
 									IF error ';'{su.addError(" Se encontro un error no considerado por la gramatica luego del IF", "Sintáctica");}
-								;
 bloque_then						:
 									THEN BEGIN sentencias_ejecutables END';' |
 									THEN sentencia_ejecutable |
@@ -125,7 +161,19 @@ bloque_else						:
 									ELSE error ';' {su.addError(" Se encontro un error no considerado por la gramatica luego del ELSE", "Sintáctica");}
 								;
 while							:	
-									WHILE condicion bloque_while |
+									WHILE condicion bloque_while
+													{
+														this.t = this.tercetosjump.get(this.tercetosjump.size() - 1);
+														this.t2 = new Terceto(
+				      											"BI",
+				      											"",
+				      											String.valueOf((Integer)(this.tercetos.indexOf(this.t))),
+				      											null
+			      												);
+			      										this.tercetos.add(this.t2);			
+														this.t.setV2(String.valueOf((Integer)(tercetos.size()+1)));
+														
+													}|
 									WHILE error ';' {su.addError(" Se encontro un error no considerado por la gramatica luego del WHILE", "Sintáctica");}
 								;
 bloque_while					:
@@ -144,16 +192,42 @@ llamado_funcion					:
 									ID '('factor')' 
 									{
 										su.addCodeStructure("LLamado a funcion " + $1.sval);
-										this.tercetos.add(new Terceto(
-											"call",
-											su.searchForKey($1.sval,CurrentScope.getScope()),
-											su.searchForKey($3.sval,CurrentScope.getScope()),
-											su.getSymbolsTableValue(su.searchForKey($3.sval,CurrentScope.getScope())).getType().toLowerCase()
-										));
+										SymbolTableValue v = su.getSymbolsTableValue(su.searchForKey($1.sval,CurrentScope.getScope()));
+										if(v.getUse().equals("FUNC")){
+											this.tercetos.add(new Terceto(
+												"call",
+												su.searchForKey($1.sval,CurrentScope.getScope()),
+												su.searchForKey($3.sval,CurrentScope.getScope()),
+												su.getSymbolsTableValue(su.searchForKey($3.sval,CurrentScope.getScope())).getType().toLowerCase()
+											));
+										}else{
+											if(v.getUse().equals("VARIABLE") && v.getType().equals("FUNC")){
+												this.tercetos.add(new Terceto(
+												"call",
+												v.getCallable(),
+												su.searchForKey($3.sval,CurrentScope.getScope()),
+												su.getSymbolsTableValue(su.searchForKey($3.sval,CurrentScope.getScope())).getType().toLowerCase()
+											));
+											}
+											else{
+												su.addError("No se puede llamar a algo que no es una funcion", "Semantica");
+											}
+										}
 									}
 								;
 
-condicion						:	'('condicion_AND')' |
+condicion						:	'('condicion_AND')' 
+									{
+										        this.t = new Terceto(
+              											"BF",
+              											"["+this.tercetos.size()+"]",
+              											"",
+              											null
+      												);
+      										    this.tercetos.add(this.t);
+      										    this.tercetosjump.add(this.t);
+      										        
+									}|
 									'('condicion_AND {su.addError(" falta parentesis de cierre en la condicion", "Sintáctica");}  |
 									condicion_AND')'{su.addError(" falta parentesis de apertura en la condicion", "Sintáctica");}
 								;
@@ -289,8 +363,20 @@ condicion_simple				:	condicion_simple '>' expresion
 
 								;
 sentencia_print					:	PRINT to_print ';'
+									{
+										this.tercetos.add(new Terceto(
+											"print",
+											$2.sval,
+											"-",
+											null
+										));
+									}	
 								;
-to_print						:	'('CTE_STRING')' |
+to_print						:	'('CTE_STRING')' 
+									{
+										$$.sval = $2.sval;
+										System.err.println($$.sval);
+									}|
 									'('CTE_STRING {su.addError(" falta parentesis de cierre para la sentencia PRINT", "Sintáctica");} |
 									CTE_STRING')' {su.addError(" falta parentesis de apertura para la sentencia PRINT", "Sintáctica");} |
 									'('WRONG_STRING {su.addError("STRING mal escrito", "Sintáctica");}
@@ -413,6 +499,9 @@ tipo							: 	UINT {$$.sval = "UINT";}|
   private StructureUtilities su;
   private List<String> idList;
   private List<Terceto> tercetos = new ArrayList<>();
+  private List<Terceto> tercetosjump = new ArrayList<>();
+  private Terceto t; 
+  private Terceto t2;
   boolean leftIsTerceto = false;
   boolean rightIsTerceto = false;
   boolean sumDetected = false;
@@ -477,8 +566,8 @@ tipo							: 	UINT {$$.sval = "UINT";}|
     boolean v2_isConst = (rightValue.charAt(0) == '-') ? Character.isDigit(rightValue.charAt(1)) || rightValue.charAt(1) == '.' : Character.isDigit(rightValue.charAt(0)) || rightValue.charAt(0) == '.'; 
     // con leftIsTerceto == true leftValue debe ser interpretado como el indice de la lista de tercetos
 	
-	String correctLeftValue = (v1_isConst || leftIsTerceto) ? leftValue : su.searchForKey(leftValue, CurrentScope.getScope());
-	String correctRightValue = (v2_isConst || rightIsTerceto) ? rightValue : su.searchForKey(rightValue, CurrentScope.getScope());
+	String correctLeftValue = (v1_isConst || leftIsTerceto) ? leftValue : su.getSymbolsTableValue(su.searchForKey(leftValue, CurrentScope.getScope())).getCallable() != null ? su.getSymbolsTableValue(su.searchForKey(leftValue, CurrentScope.getScope())).getCallable() : su.searchForKey(leftValue, CurrentScope.getScope());
+	String correctRightValue = (v2_isConst || rightIsTerceto) ? rightValue : su.getSymbolsTableValue(su.searchForKey(rightValue, CurrentScope.getScope())).getCallable() != null ? su.getSymbolsTableValue(su.searchForKey(rightValue, CurrentScope.getScope())).getCallable() : su.searchForKey(rightValue, CurrentScope.getScope());
 	
 	if(correctLeftValue == null){
 		su.addError("La variable " + leftValue + " no fue definida","Semántica");
@@ -496,17 +585,19 @@ tipo							: 	UINT {$$.sval = "UINT";}|
     String type2 =  rightIsTerceto ? this.tercetos.get(Integer.parseInt(rightValue)-1).getType().toUpperCase() :
                     su.getSymbolsTableValue(correctRightValue).getType();
 
+    String v1 = leftIsTerceto ? "[" + leftValue + "]" : v1_isConst ? leftValue : correctLeftValue;
+    String v2 = rightIsTerceto ? "[" + rightValue + "]" : v2_isConst ? rightValue : correctRightValue;
     if(!type1.equals(type2) && (type1.contains("DOUBLE") || type2.contains("DOUBLE"))){
       //Si son de distinto tipo, al menos uno es DOUBLE
       Terceto t;
       if(type1.contains("UINT") && !compositeComparison){
-        t = new Terceto("utod", leftIsTerceto ? "["+leftValue+"]" : v1_isConst ? leftValue : leftValue + ":" + CurrentScope.getScope(), "-", "double");
+        t = new Terceto("utod", v1, "-", "double");
         v1_isConverted = true;
         amtTercetos++;
 		aux.add(t);
       }else{
         if(type2.contains("UINT") && !compositeComparison) {
-          t = new Terceto("utod", rightIsTerceto ? "["+rightValue+"]" : v2_isConst ? rightValue : rightValue + ":" + CurrentScope.getScope(), "-", "double");
+          t = new Terceto("utod", v2, "-", "double");
           v2_isConverted = true;
 		  amtTercetos++;
 		  aux.add(t);
@@ -514,8 +605,8 @@ tipo							: 	UINT {$$.sval = "UINT";}|
       }
       t = new Terceto(
               operator,
-              v1_isConverted ? "["+amtTercetos+"]" : leftIsTerceto ? "["+leftValue+"]" : v1_isConst ? leftValue : leftValue + ":" + CurrentScope.getScope(),
-              v2_isConverted ? "["+amtTercetos+"]" : rightIsTerceto ? "["+rightValue+"]" : v2_isConst ? rightValue : rightValue + ":" + CurrentScope.getScope(),
+              v1_isConverted ? "["+amtTercetos+"]" : v1,
+              v2_isConverted ? "["+amtTercetos+"]" : v2,
               "double"
       );
       aux.add(t);
@@ -525,15 +616,15 @@ tipo							: 	UINT {$$.sval = "UINT";}|
         //este es el caso de que ambos tipos son UINT
         t = new Terceto(
                 operator,
-                leftIsTerceto ? "["+leftValue+"]" : v1_isConst ? leftValue : leftValue + ":" + CurrentScope.getScope(),
-                rightIsTerceto ? "["+rightValue+"]" : v2_isConst ? rightValue : rightValue + ":" + CurrentScope.getScope(),
+                v1,
+                v2,
                 "uint"
         );
       }else{
         t = new Terceto(
                 operator,
-                leftIsTerceto ? "["+leftValue+"]" : v1_isConst ? leftValue : leftValue + ":" + CurrentScope.getScope(),
-                rightIsTerceto ? "["+rightValue+"]" : v2_isConst ? rightValue : rightValue + ":" + CurrentScope.getScope(),
+                v1,
+                v2,
                 "double"
         );
       }
@@ -583,8 +674,11 @@ tipo							: 	UINT {$$.sval = "UINT";}|
 				su.addError("La variable " + rightSide + " no fue definida","Semántica");
 				return;
 			}
+			if(su.getSymbolsTableValue(lexeme).getCallable() != null)
+              lexeme = su.getSymbolsTableValue(lexeme).getCallable();
             String rightType = su.getSymbolsTableValue(lexeme).getType();
-            if(type.equals("DOUBLE")){
+            String rightUse = su.getSymbolsTableValue(lexeme).getUse();
+			if(type.equals("DOUBLE")){
                 if(rightType.contains("UINT")){
                     Terceto conversion = new Terceto(
                         "utod",
@@ -620,6 +714,14 @@ tipo							: 	UINT {$$.sval = "UINT";}|
                     ));
                 }
             }
+			//lado izquierdo de tipo FUNC
+			if(type.equals("FUNC") ){
+				if(rightUse.equals("FUNC")){
+					v.setCallable(su.searchForKey(rightSide,CurrentScope.getScope()));
+				}else{
+					su.addError("No se puede asignar otra cosa que no sea una funcion cuando el lado izquierdo es de tupi FUNC", "Semantica");
+				}
+			}
 
         }
         if(this.tercetos.get(this.tercetos.size() - 1).getType() != null){

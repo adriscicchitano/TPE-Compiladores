@@ -40,6 +40,10 @@ public class utils {
         }
     }
 
+    public static boolean isNumber(String s){
+        return (s.charAt(0) == '-') ? Character.isDigit(s.charAt(1)) || s.charAt(1) == '.' : Character.isDigit(s.charAt(0)) || s.charAt(0) == '.';
+    }
+
     public static String formattedList(List<String> list){
         String result = "";
         for(String t :  list){

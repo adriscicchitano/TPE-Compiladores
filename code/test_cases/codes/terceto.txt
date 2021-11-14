@@ -1,18 +1,11 @@
 abc
-double x,y;
-uint z;
-begin
-	while (x < 1) DO BEGIN BREAK; END;
-	while (x < 1) DO PRINT(%ABC%);;
-	if (8 < 8) then
-	begin
-		x := y;
-		PRINT(%ABC%);
-		while (x == 0.3) DO 
-			if(y <> 5) then
-				y := x;
-			endif;
-		;
-	end
-	endif;
-end
+UINT x,y,z,t,a,b;
+BEGIN 
+	x := 1;
+	y := 1;
+	z := 1;
+	t := 1;
+	a := 1;
+	b := 1;
+	WHILE ( x > y && z < t || a <> b ) DO BEGIN BREAK; END;
+END;

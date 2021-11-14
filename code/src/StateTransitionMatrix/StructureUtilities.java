@@ -231,6 +231,8 @@ public class StructureUtilities {
             if(result != null)
                 return newKey;
         }
+        if((key.charAt(0) == '-') ? Character.isDigit(key.charAt(1)) || key.charAt(1) == '.' : Character.isDigit(key.charAt(0)) || key.charAt(0) == '.')
+            return key;
         return null;
     }
 }

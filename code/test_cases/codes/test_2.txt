@@ -1,20 +1,28 @@
 abc
 DOUBLE ab;
-UINT aa;
+UINT aa, t;
 UINT FUNC f(UINT z)
-	DOUBLE FUNC hace(UINT z)
-		DOUBLE a;
-		BEGIN
-			aa:=a - 4;
-			RETURN(0);
-		END;
-	DOUBLE a;
+	UINT a;
 	BEGIN
-		aa:=a - 4;
-		RETURN(0);
+		z := z - 4;
+		RETURN(z);
 	END;
-FUNC r,t;
+FUNC r;
 BEGIN
-	IF (aa > t) THEN ab := f(aa); ENDIF;
-	WHILE (aa + aa < 4 || 1 > 0) DO BREAK;
+	r := f;
+	t := 10;
+	aa := t;
+	ab := 10.0;
+	ab := ab + 1; 
+	**ab := 12;
+	**aa := f(aa);
+	**aa := r(aa) * 1 + 1 ;
+	**aa := aa - 1 + 1 * 1 + 1 * 1;
+	**IF( aa > 0 || 4 < 5 && 3 < aa) THEN 
+	IF( f(aa) == r(aa) ) THEN 
+	BEGIN 
+		aa := r(5); 
+		PRINT(%adri%);
+	END;
+	ENDIF;
 END;
