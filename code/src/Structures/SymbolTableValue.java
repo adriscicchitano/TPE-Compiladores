@@ -3,18 +3,17 @@ package Structures;
 public class SymbolTableValue {
     private String type;
     private String use;
-    private String parameterType;
-    private String callableFunction;
+    private String parameter;
 
     public SymbolTableValue(String type, String use){
         this.type = type;
         this.use= use;
     }
 
-    public SymbolTableValue(String type, String use, String parameterType){
+    public SymbolTableValue(String type, String use, String parameter){
         this.type = type;
         this.use= use;
-        this.parameterType = parameterType;
+        this.parameter = parameter;
     }
 
     public String getType() {
@@ -33,10 +32,13 @@ public class SymbolTableValue {
         this.use = use;
     }
 
-    public void setParameterType(String parameter){
-        this.parameterType = parameter;
+    public void setParameter(String parameter){
+        this.parameter = parameter;
     }
 
+
+    public String getParameter(){return this.parameter;}
+    /*
     public void setCallable(String callableFunction){
         this.callableFunction = callableFunction;
     }
@@ -44,12 +46,16 @@ public class SymbolTableValue {
     public String getCallable(){
         return this.callableFunction;
     }
-
+    */
     @Override
     public String toString() {
         String result = "["+type + "-" + use;
+        /*
         if(this.callableFunction != null)
             result += "-" + callableFunction;
+        */
+        if(this.parameter != null)
+            result += "-" + parameter;
         return  result+ "]";
     }
 }

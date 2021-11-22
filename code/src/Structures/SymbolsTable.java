@@ -39,13 +39,13 @@ public class SymbolsTable {
 
     }
 
-    public void changeValue(String key, String type, String use, String parameterType){
+    public void changeValue(String key, String type, String use, String parameter){
         SymbolTableValue v = null;
         if(this.symbolsTable.containsKey(key)) {
             v = this.symbolsTable.remove(key);
             v.setType(type);
             v.setUse(use);
-            v.setParameterType(parameterType);
+            v.setParameter(parameter);
             this.symbolsTable.put(key,v);
         }else{
             System.err.println("NO EXISTE LA CLAVE EN LA TABLA DE SIMBOLOS");

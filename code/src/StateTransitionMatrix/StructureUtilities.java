@@ -98,7 +98,7 @@ public class StructureUtilities {
         this.tokenizedText.add(result.copy());
     }
 
-    private void addSymbolToTable(String key, String value){
+    public void addSymbolToTable(String key, String value){
         this.symbolsTable.addSymbols(key,value);
     }
 
@@ -176,8 +176,8 @@ public class StructureUtilities {
         this.symbolsTable.changeValue(key, type, use);
     }
 
-    public void changeSTValues(String key, String type, String use, String parameterType){
-        this.symbolsTable.changeValue(key, type, use, parameterType);
+    public void changeSTValues(String key, String type, String use, String parameter){
+        this.symbolsTable.changeValue(key, type, use, parameter);
     }
 
     public void changeSTValues(List<String> keys, String type, String use){
@@ -185,9 +185,9 @@ public class StructureUtilities {
             this.symbolsTable.changeValue(key, type, use);
     }
 
-    public void changeSTValues(List<String> keys, String type, String use, String parameterType){
+    public void changeSTValues(List<String> keys, String type, String use, String parameter){
         for(String key : keys)
-            this.symbolsTable.changeValue(key, type, use, parameterType);
+            this.symbolsTable.changeValue(key, type, use, parameter);
     }
 
     public void changeSTKey(String formerKey, String newKey){

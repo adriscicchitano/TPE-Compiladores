@@ -57,6 +57,13 @@ public class Terceto {
         this.v2 = v2;
     }
 
+    public void setV1(String v1){
+        this.v1 = v1;
+    }
+
+    public void setType(String type){
+        this.type = type;
+    }
 
     @Override
     public String toString() {
