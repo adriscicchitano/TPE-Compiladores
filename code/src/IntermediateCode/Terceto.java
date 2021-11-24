@@ -61,6 +61,10 @@ public class Terceto {
         this.v1 = v1;
     }
 
+    public void setAction(String action){
+        this.action = action;
+    }
+
     public void setType(String type){
         this.type = type;
     }

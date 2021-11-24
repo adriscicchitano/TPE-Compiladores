@@ -1,0 +1,38 @@
+abc
+DOUBLE ab;
+UINT aa, t;
+UINT FUNC f(DOUBLE z)
+	UINT j, k;
+	UINT FUNC h(DOUBLE z)
+		BEGIN
+			t := t + 1;
+			PRINT(%h%);
+			RETURN(0);
+		END;
+	BEGIN
+		PRE: (z<10),%Pre%;
+		IF (z < 10) THEN j := 1; ELSE j := 0; ENDIF;
+		t := t + 1;
+		k := h(1);
+		PRINT(%f%);
+		RETURN(j);
+	END;
+FUNC r, g;
+BEGIN
+	g := f;
+	t := 9 * 1;
+	ab := 0.0;
+	ab := 1 * 2 + 3;
+	ab := 2;
+	r := g;
+	IF(r(t) == g(15) && 1 > 0.0 + 0.0 || ab == ab) THEN 
+		PRINT(%hola%); 
+	ELSE 
+		PRINT(%chau%);
+	ENDIF;
+	WHILE(t > 0) DO
+	BEGIN
+		t := t-1;
+		**PRINT(%K%);
+	END;
+END;

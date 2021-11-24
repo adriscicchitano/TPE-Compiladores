@@ -147,6 +147,9 @@ public class Translator {
                     case "BI":
                         code += this.translateBI(t);
                         break;
+		    case "BT":
+                        code += this.translateBT(t);
+                        break;	
                     case "Pre":
                         code += this.translatePRE(t);
                         break;
@@ -226,6 +229,11 @@ public class Translator {
         return translation;
     }
 
+    public String translateBT(Terceto t){
+        String translation = "pop "+r1_2B+"\ncmp "+r1_2B+", 1\nje "+t.getV2()+"\n";
+        return translation;
+    }
+
     public String translateBF(Terceto t){
         String translation = "pop "+r1_2B+"\ncmp "+r1_2B+", 0\nje "+t.getV2()+"\n";
         return translation;
@@ -234,8 +242,8 @@ public class Translator {
     public String translateScreenPrint(Terceto t){
         String translation = "";
         String toPrint = t.getV1();
-        this.dataSection += "\t"+toPrint.replaceAll(" ", "_")+" DB "+"\""+toPrint+"\", 0\n";
-        translation += "invoke StdOut, addr "+toPrint.replaceAll(" ", "_")+"\n";
+        this.dataSection += "\t"+toPrint.replaceAll(" ", "_").replaceAll("\\.", "_")+" DB "+"\""+toPrint+"\", 0\n";
+        translation += "invoke StdOut, addr "+toPrint.replaceAll(" ", "_").replaceAll("\\.", "_")+"\n";
         return translation;
     }
 

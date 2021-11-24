@@ -14,7 +14,7 @@ public class main {
     public static void main(String[] args){
         //File f = new File(args[0]);
 
-        File f = new File("X:\\ADRIAN\\4-CUARTO AÑO\\Diseño de Compiladores\\TPE\\code\\test_cases\\codes\\conversiones.txt");
+        File f = new File("C:\\Users\\Tomas\\Desktop\\compi\\Casos de Prueba\\caso_6.txt");
 
         Text text = new Text(f);
         Parser p = new Parser(text,true);
